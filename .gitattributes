@@ -1,0 +1,20 @@
+# Default: treat everything as text with LF line endings
+* text=auto eol=lf
+
+# Markdown / text
+*.md        text eol=lf diff=markdown
+*.txt       text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.json      text eol=lf
+
+# Shell scripts — always LF, executable
+*.sh        text eol=lf
+
+# Binary-safe guards (if any assets are ever added)
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.pdf       binary
+*.zip       binary

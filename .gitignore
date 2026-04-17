@@ -1,0 +1,59 @@
+# ─────────────────────────────────────────────
+# Reasoner — .gitignore
+# ─────────────────────────────────────────────
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Installed copies inside consumer projects (if this repo is cloned into one)
+agents/reasoner/
+**/agents/reasoner/
+
+# Local test output / scratch
+/tmp/
+/scratch/
+/.local/
+*.log
+
+# Python (in case eval scripts are added later)
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Node (in case a docs site is added later)
+node_modules/
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build artifacts
+dist/
+build/
+out/
+*.tgz
+*.zip
+
+# Environment / secrets — never commit
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
