@@ -1,5 +1,24 @@
 # Changelog
 
+## [Unreleased] — EIIS-1.0 conformance
+
+### Added
+- **`AGENTS.md` YAML frontmatter** — §5-compliant block (name, version, methodology, methodology_version, role, handoffs)
+- **`schemas/install.manifest.v1.json`** — JSON Schema draft 2020-12 for install manifest validation
+- **`.github/copilot-instructions.md`** — Copilot host pointer with P0 rules and phase table
+- **`INSTALL.md`** — Human cross-host install guide (Claude Code, Copilot, Cursor, OpenCode, raw API)
+- **`hosts/claude-code.md`**, **`hosts/copilot.md`**, **`hosts/cursor.md`**, **`hosts/opencode.md`** — Per-host wiring docs
+- **`evals/canary-missions.md`** — Three smoke missions (trade-off, frame guard, scope escalation)
+- **`CLAUDE.md` consumer section** — Consumer-project install pointer pattern
+
+### Changed
+- **`install.sh`** — Full EIIS-1.0 §3 interface: `--target`, `--hosts`, `--force`, `--dry-run`, `--non-interactive`, `--manifest-only`, `--version`, `-h/--help`; idempotency check; actual dispatch file writing per host; `install.manifest.json` emission; `agent.md` token count measurement and budget gate
+
+### Unchanged
+- FORGE cycle (Frame → Observe → Reason → Gate → Emit)
+- Six structural markers, five decision templates, three skills
+- 4-factor confidence calibration and bounded deliberation budget
+
 ## [1.1.0] - 2026-04-16 — Quality Bar Completion
 
 ### Added

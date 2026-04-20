@@ -1,4 +1,15 @@
-# AGENTS.md — Reasoner / FORGE methodology (v1.0)
+---
+name: forge
+version: 1.1.0
+methodology: FORGE
+methodology_version: 1.1.0
+role: Reasoner — structured deliberation and decision intelligence
+handoffs:
+  upstream:   [atlas, spectra, apivr]
+  downstream: [spectra, apivr, scribe]
+---
+
+# AGENTS.md — Reasoner / FORGE methodology (v1.1.0)
 
 > This file follows the [agents.md open standard](https://agents.md). It is
 > auto-loaded by **GitHub Copilot**, **Cursor**, **OpenCode**, and any other
