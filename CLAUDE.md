@@ -21,3 +21,20 @@ ln -sf ../../agent.md .claude/agents/reasoner.md
 
 Full specification and architecture details: see [`AGENTS.md`](./AGENTS.md)
 and [`REASONER.md`](./REASONER.md).
+
+## Consumer project usage
+
+After installing the Reasoner into a consumer project (`bash install.sh`),
+Claude Code finds the installed agent at `agents/reasoner/agent.md`. Point
+your consumer project's `CLAUDE.md` at the installed entry:
+
+```
+@agents/reasoner/REASONER.md
+```
+
+Or register as a sub-agent:
+
+```bash
+mkdir -p .claude/agents
+ln -sf ../../agents/reasoner/agent.md .claude/agents/reasoner.md
+```
