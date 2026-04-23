@@ -161,4 +161,4 @@ Every emitted verdict includes:
 
 ---
 
-*Reasoner v1.0.0 — Verification Skill*
+*Reasoner v1.1.1 — Verification Skill*

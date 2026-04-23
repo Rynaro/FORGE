@@ -176,4 +176,4 @@ If the winning hypothesis is the same across all passes, confidence increases by
 
 ---
 
-*Reasoner v1.0.0 — Deliberation Skill*
+*Reasoner v1.1.1 — Deliberation Skill*

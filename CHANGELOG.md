@@ -1,6 +1,10 @@
 # Changelog
 
-## [Unreleased] — EIIS-1.0 conformance
+## [Unreleased]
+
+_Nothing yet._
+
+## [1.1.1] - 2026-04-23 — EIIS-1.0 conformance
 
 ### Added
 - **`AGENTS.md` YAML frontmatter** — §5-compliant block (name, version, methodology, methodology_version, role, handoffs)
