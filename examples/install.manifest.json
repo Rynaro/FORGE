@@ -1,6 +1,6 @@
 {
   "eidolon": "forge",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "methodology": "FORGE",
   "installed_at": "2026-04-26T16:08:41Z",
   "target": "./agents/reasoner",

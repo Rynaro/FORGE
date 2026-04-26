@@ -57,3 +57,6 @@ out/
 *.pem
 *.key
 secrets/
+
+# Eidolon-side host artefacts (created by smoke-running install.sh in cwd)
+.codex/

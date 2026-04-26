@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ──────────────────────────────────────────────────────────
-# Reasoner v1.1.1 — Install Script (EIIS-1.0 conformant)
+# Reasoner v1.2.0 — Install Script (EIIS-1.0 conformant)
 #
 # Installs the Reasoner deliberation agent into any project.
 # Usage: bash install.sh [OPTIONS]
@@ -10,7 +10,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
-EIDOLON_VERSION="1.1.1"
+EIDOLON_VERSION="1.2.0"
 METHODOLOGY="FORGE"
 
 # --- defaults ---

@@ -136,4 +136,4 @@ See [DESIGN-RATIONALE.md](DESIGN-RATIONALE.md) for the full mapping of research 
 
 ---
 
-*Reasoner v1.1.1*
+*Reasoner v1.2.0*

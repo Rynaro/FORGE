@@ -139,4 +139,4 @@ The Reasoner holds no tools, retrieves nothing, writes to no external store, and
 
 ---
 
-*Reasoner v1.1.1*
+*Reasoner v1.2.0*

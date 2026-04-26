@@ -79,4 +79,4 @@ or event sourcing for the order workflow. Here are both positions.
 
 ---
 
-*Reasoner v1.1.1*
+*Reasoner v1.2.0*
