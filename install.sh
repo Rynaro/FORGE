@@ -10,7 +10,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
-EIDOLON_VERSION="1.2.0"
+EIDOLON_VERSION="1.2.1"
 METHODOLOGY="FORGE"
 
 # --- defaults ---
