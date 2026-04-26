@@ -31,13 +31,10 @@ Usage: bash install.sh [OPTIONS]
 
 Options:
   --target DIR          Target install dir (default: ${TARGET})
-  --hosts LIST          claude-code,copilot,cursor,opencode,codex,all
-                        (default: auto)
+  --hosts LIST          claude-code,copilot,cursor,opencode,all (default: auto)
   --shared-dispatch     Compose marker-bounded section in root AGENTS.md /
                         CLAUDE.md / .github/copilot-instructions.md.
   --no-shared-dispatch  Skip root composition (default).
-                        NB: when 'codex' is wired, root AGENTS.md is still
-                        written (EIIS v1.1 §4.1.0 — Codex's primary surface).
   --force               Overwrite existing install
   --dry-run             Print actions, no writes
   --non-interactive     No prompts; fail on ambiguity (meta-installer mode)
@@ -84,7 +81,46 @@ detect_hosts() {
 
 if [[ "$HOSTS" == "auto" ]]; then
   HOSTS="$(detect_hosts)"
+elif [[ "$HOSTS" == "all" ]]; then
+  HOSTS="claude-code,copilot,cursor,opencode"
 fi
+
+# Validate the host list (--hosts LIST values per EIIS §2.1).
+IFS=',' read -ra _HOST_VALIDATE <<< "$HOSTS"
+for _h in "${_HOST_VALIDATE[@]}"; do
+  _h="${_h// /}"
+  case "$_h" in
+    claude-code|copilot|cursor|opencode|raw|none|all|"") : ;;
+    *) echo "Invalid --hosts value: $_h" >&2; exit 2 ;;
+  esac
+done
+
+# --- utilities (EIIS v1.1 §3.3 — files_written tracking) ---
+sha256_file() {
+  local f="$1"
+  if command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$f" | awk '{print $1}'
+  elif command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$f" | awk '{print $1}'
+  elif command -v openssl >/dev/null 2>&1; then
+    openssl dgst -sha256 "$f" | awk '{print $NF}'
+  else
+    echo "0000000000000000000000000000000000000000000000000000000000000000"
+  fi
+}
+
+# FILES_WRITTEN accumulates JSON object literals; flushed into the manifest.
+FILES_WRITTEN=()
+
+# record_file <path> <role> <mode>
+#   role: entry-point | spec | skill | template | dispatch | manifest | other
+#   mode: created | appended | overwritten | rewritten
+record_file() {
+  local p="$1" role="$2" mode="$3"
+  [[ -f "$p" ]] || return 0
+  local chk; chk=$(sha256_file "$p")
+  FILES_WRITTEN+=("{\"path\":\"${p}\",\"sha256\":\"${chk}\",\"role\":\"${role}\",\"mode\":\"${mode}\"}")
+}
 
 echo "╔══════════════════════════════════════════╗"
 echo "║  Reasoner v${EIDOLON_VERSION} — Install               ║"
@@ -121,26 +157,33 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     mkdir -p "$TARGET/skills/verification"
     mkdir -p "$TARGET/templates"
 
+    # copy_tracked <src-rel> <dst> <role>
+    copy_tracked() {
+      local src="$1" dst="$2" role="$3"
+      cp "$SCRIPT_DIR/$src" "$dst"
+      record_file "$dst" "$role" "created"
+    }
+
     # Copy core files
-    cp "$SCRIPT_DIR/REASONER.md"          "$TARGET/REASONER.md"
-    cp "$SCRIPT_DIR/SKILL.md"             "$TARGET/SKILL.md"
-    cp "$SCRIPT_DIR/agent.md"             "$TARGET/agent.md"
-    cp "$SCRIPT_DIR/AGENTS.md"            "$TARGET/AGENTS.md"
-    cp "$SCRIPT_DIR/CLAUDE.md"            "$TARGET/CLAUDE.md"
-    cp "$SCRIPT_DIR/DESIGN-RATIONALE.md"  "$TARGET/DESIGN-RATIONALE.md"
-    cp "$SCRIPT_DIR/README.md"            "$TARGET/README.md"
+    copy_tracked "REASONER.md"          "$TARGET/REASONER.md"          "spec"
+    copy_tracked "SKILL.md"             "$TARGET/SKILL.md"             "skill"
+    copy_tracked "agent.md"             "$TARGET/agent.md"             "entry-point"
+    copy_tracked "AGENTS.md"            "$TARGET/AGENTS.md"            "entry-point"
+    copy_tracked "CLAUDE.md"            "$TARGET/CLAUDE.md"            "entry-point"
+    copy_tracked "DESIGN-RATIONALE.md"  "$TARGET/DESIGN-RATIONALE.md"  "other"
+    copy_tracked "README.md"            "$TARGET/README.md"            "other"
 
     # Copy skills
-    cp "$SCRIPT_DIR/skills/framing/SKILL.md"       "$TARGET/skills/framing/SKILL.md"
-    cp "$SCRIPT_DIR/skills/deliberation/SKILL.md"   "$TARGET/skills/deliberation/SKILL.md"
-    cp "$SCRIPT_DIR/skills/verification/SKILL.md"   "$TARGET/skills/verification/SKILL.md"
+    copy_tracked "skills/framing/SKILL.md"        "$TARGET/skills/framing/SKILL.md"       "skill"
+    copy_tracked "skills/deliberation/SKILL.md"   "$TARGET/skills/deliberation/SKILL.md"  "skill"
+    copy_tracked "skills/verification/SKILL.md"   "$TARGET/skills/verification/SKILL.md"  "skill"
 
     # Copy templates
-    cp "$SCRIPT_DIR/templates/verdict.md"               "$TARGET/templates/verdict.md"
-    cp "$SCRIPT_DIR/templates/trade-off-analysis.md"    "$TARGET/templates/trade-off-analysis.md"
-    cp "$SCRIPT_DIR/templates/feasibility-assessment.md" "$TARGET/templates/feasibility-assessment.md"
-    cp "$SCRIPT_DIR/templates/root-cause-analysis.md"   "$TARGET/templates/root-cause-analysis.md"
-    cp "$SCRIPT_DIR/templates/conflict-resolution.md"   "$TARGET/templates/conflict-resolution.md"
+    copy_tracked "templates/verdict.md"                 "$TARGET/templates/verdict.md"                "template"
+    copy_tracked "templates/trade-off-analysis.md"      "$TARGET/templates/trade-off-analysis.md"     "template"
+    copy_tracked "templates/feasibility-assessment.md"  "$TARGET/templates/feasibility-assessment.md" "template"
+    copy_tracked "templates/root-cause-analysis.md"     "$TARGET/templates/root-cause-analysis.md"    "template"
+    copy_tracked "templates/conflict-resolution.md"     "$TARGET/templates/conflict-resolution.md"    "template"
 
     echo "✓ Core files installed to $TARGET"
     echo ""
@@ -148,97 +191,205 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
 fi
 
 # ──────────────────────────────────────────────────────────
+# Marker-aware shared-dispatch helper (EIIS v1.1 §4.1).
+#
+# Owns a marker-bounded region in a composable dispatch file (root
+# AGENTS.md, CLAUDE.md, .github/copilot-instructions.md). On second run,
+# the region is rewritten in place — output is byte-identical to the
+# first run (§4.1.2, §5.2). Bare appends without markers (D-4) are
+# explicitly avoided. Legacy non-marker FORGE content from v1.1.1 and
+# earlier is left untouched: we only append a fresh marker-bounded
+# block, leaving the consumer to manually clean up legacy lines if
+# desired (the safer choice — see PR body).
+# ──────────────────────────────────────────────────────────
+upsert_eidolon_block() {
+  # upsert_eidolon_block <dst> <content> <role>
+  local dst="$1" content="$2" role="$3"
+  local start="<!-- eidolon:${EIDOLON_NAME} start -->"
+  local end="<!-- eidolon:${EIDOLON_NAME} end -->"
+
+  if [[ "$DRY_RUN" == "true" ]]; then
+    local action="append"
+    if [[ -f "$dst" ]] && grep -qF "$start" "$dst" 2>/dev/null; then
+      action="rewrite"
+    fi
+    echo "  [dry-run] ${action} eidolon:${EIDOLON_NAME} block in ${dst}"
+    return
+  fi
+
+  mkdir -p "$(dirname "$dst")" 2>/dev/null || true
+
+  # Legacy cleanup: convert any pre-existing symlink to a real file before
+  # upserting (defensive — older FORGE installers did not symlink, but
+  # consumers may have done so manually).
+  if [[ -L "$dst" ]]; then
+    rm -f "$dst"
+  fi
+
+  local content_file mode tmp
+  content_file="$(mktemp)"
+  printf '%s\n' "$content" > "$content_file"
+
+  if [[ -f "$dst" ]] && grep -qF "$start" "$dst" 2>/dev/null; then
+    mode="rewritten"
+    tmp="$(mktemp)"
+    awk -v start="$start" -v end="$end" -v cf="$content_file" '
+      BEGIN { in_block = 0 }
+      $0 == start {
+        print start
+        while ((getline line < cf) > 0) print line
+        close(cf)
+        in_block = 1
+        next
+      }
+      $0 == end {
+        print end
+        in_block = 0
+        next
+      }
+      !in_block { print }
+    ' "$dst" > "$tmp"
+    mv "$tmp" "$dst"
+  elif [[ -f "$dst" ]]; then
+    mode="appended"
+    {
+      printf '\n%s\n' "$start"
+      cat "$content_file"
+      printf '%s\n' "$end"
+    } >> "$dst"
+  else
+    mode="created"
+    {
+      printf '%s\n' "$start"
+      cat "$content_file"
+      printf '%s\n' "$end"
+    } > "$dst"
+  fi
+
+  rm -f "$content_file"
+  record_file "$dst" "$role" "$mode"
+}
+
+# Shared-dispatch block content — identical body across AGENTS.md,
+# CLAUDE.md, and .github/copilot-instructions.md so the marker rewrite
+# stays idempotent regardless of which surface is being touched.
+SHARED_BLOCK="## FORGE — Reasoner / structured deliberation (v${EIDOLON_VERSION})
+
+Entry: \`${TARGET}/agent.md\`
+Spec:  \`${TARGET}/REASONER.md\`
+Cycle: F (Frame) → O (Observe) → R (Reason) → G (Gate) → E (Emit)
+
+**P0 (non-negotiable):** reasoning-only (no tools, no mutations); frame first
+(refuse vague questions); ≥3 hypotheses with adversarial stress-tests;
+evidence-anchored claims (H/M/L tiers); bounded deliberation (≤3 passes +
+1 REFORGE); reversal conditions mandatory.
+
+See \`${TARGET}/AGENTS.md\` for full rules and the phase pipeline."
+
+# ──────────────────────────────────────────────────────────
 # Host detection and dispatch file writing
 # ──────────────────────────────────────────────────────────
 
 hosts_wired_arr=()
+
+# write_per_host_dispatch <dst> <content> — overwrites unconditionally
+# (--force semantics is the manifest-level idempotency gate; the file
+# itself is owned by the Eidolon and rewritten byte-identically per §5.3).
+write_per_host_dispatch() {
+  local dst="$1" content="$2"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo "  [dry-run] write ${dst}"
+    return
+  fi
+  mkdir -p "$(dirname "$dst")"
+  printf '%s\n' "$content" > "$dst"
+  record_file "$dst" "dispatch" "created"
+}
 
 wire_host() {
   local host="$1"
   case "$host" in
     claude-code)
       if [[ "$DRY_RUN" == "true" ]]; then
-        echo "[dry-run] Would append FORGE pointer to CLAUDE.md"
-      elif [[ -f "CLAUDE.md" ]]; then
-        if ! grep -q "${TARGET}/REASONER.md" "CLAUDE.md" 2>/dev/null; then
-          printf '\n# Reasoner (FORGE)\n@%s/REASONER.md\n' "${TARGET}" >> "CLAUDE.md"
-          echo "→ Claude Code: appended FORGE pointer to CLAUDE.md"
-        else
-          echo "→ Claude Code: CLAUDE.md already references ${TARGET}/REASONER.md (skipped)"
+        echo "[dry-run] Would write .claude/agents/${EIDOLON_NAME}.md"
+        [[ "$SHARED_DISPATCH" == "true" ]] && echo "[dry-run] Would upsert eidolon:${EIDOLON_NAME} block in CLAUDE.md"
+      else
+        local CLAUDE_AGENT="---
+name: ${EIDOLON_NAME}
+description: Reasoner — structured deliberation for hard decisions via the FORGE cycle (Frame → Observe → Reason → Gate → Emit). Reasoning-only; refuses tools, exploration, and implementation.
+tools: none
+methodology: ${METHODOLOGY}
+methodology_version: \"${EIDOLON_VERSION}\"
+role: Reasoner — structured deliberation and decision intelligence
+handoffs: [spectra, apivr, atlas, scribe]
+---
+
+# FORGE — Reasoner subagent
+
+Execute the FORGE cycle (Frame → Observe → Reason → Gate → Emit). You are
+**reasoning-only**: no tool calls, no file mutations, no exploration. If
+asked to plan, implement, or scout, hand off.
+
+Full rules: \`${TARGET}/AGENTS.md\`. Always-loaded profile: \`${TARGET}/agent.md\`.
+Skills under \`${TARGET}/skills/<phase>/SKILL.md\` — load only the active phase."
+        write_per_host_dispatch ".claude/agents/${EIDOLON_NAME}.md" "$CLAUDE_AGENT"
+        if [[ "$SHARED_DISPATCH" == "true" ]]; then
+          upsert_eidolon_block "CLAUDE.md" "$SHARED_BLOCK" "dispatch"
         fi
+        echo "→ Claude Code: wired"
         hosts_wired_arr+=("claude-code")
       fi
       ;;
     copilot)
       if [[ "$DRY_RUN" == "true" ]]; then
-        echo "[dry-run] Would create/update .github/copilot-instructions.md"
+        echo "[dry-run] Would write .github/instructions/${EIDOLON_NAME}.instructions.md"
+        [[ "$SHARED_DISPATCH" == "true" ]] && echo "[dry-run] Would upsert eidolon:${EIDOLON_NAME} block in .github/copilot-instructions.md"
       else
-        mkdir -p ".github"
-        local COPILOT_INSTR=".github/copilot-instructions.md"
-        if [[ ! -f "$COPILOT_INSTR" ]]; then
-          cat > "$COPILOT_INSTR" <<EOF
-# GitHub Copilot — FORGE Reasoner methodology
+        local COPILOT_INSTR="---
+applyTo: \"**\"
+description: \"FORGE — structured deliberation for hard decisions\"
+---
 
-> Authoritative rule set: \`${TARGET}/AGENTS.md\`. This file is a minimal pointer.
-
-Load \`${TARGET}/REASONER.md\` when the user invokes the Reasoner or FORGE methodology.
-See \`${TARGET}/AGENTS.md\` for full non-negotiable rules and phase pipeline.
-EOF
-          echo "→ Copilot: created .github/copilot-instructions.md"
-        else
-          if ! grep -q "${TARGET}" "$COPILOT_INSTR" 2>/dev/null; then
-            printf '\n# Reasoner (FORGE)\nSee %s/AGENTS.md\n' "${TARGET}" >> "$COPILOT_INSTR"
-            echo "→ Copilot: appended FORGE pointer to .github/copilot-instructions.md"
-          else
-            echo "→ Copilot: copilot-instructions.md already references ${TARGET} (skipped)"
-          fi
+See \`${TARGET}/AGENTS.md\` for the full ruleset and phase pipeline.
+Reasoning-only — refuses tools, planning, and implementation."
+        write_per_host_dispatch ".github/instructions/${EIDOLON_NAME}.instructions.md" "$COPILOT_INSTR"
+        if [[ "$SHARED_DISPATCH" == "true" ]]; then
+          upsert_eidolon_block ".github/copilot-instructions.md" "$SHARED_BLOCK" "dispatch"
         fi
+        echo "→ Copilot: wired"
         hosts_wired_arr+=("copilot")
       fi
       ;;
     cursor)
       if [[ "$DRY_RUN" == "true" ]]; then
-        echo "[dry-run] Would create .cursor/rules/reasoner.mdc"
+        echo "[dry-run] Would write .cursor/rules/${EIDOLON_NAME}.mdc"
       else
-        mkdir -p ".cursor/rules"
-        local CURSOR_RULE=".cursor/rules/reasoner.mdc"
-        if [[ ! -f "$CURSOR_RULE" || "$FORCE" == "true" ]]; then
-          cat > "$CURSOR_RULE" <<EOF
----
-description: Reasoner — structured deliberation for hard decisions (FORGE methodology)
-globs: "**/*"
+        local CURSOR_RULE="---
+description: \"FORGE — structured deliberation for hard decisions\"
+globs: \"**/*\"
 alwaysApply: false
 ---
 
-See ${TARGET}/agent.md for the full Reasoner specification.
-Invoke with: "Reasoner, help me decide: ..."
-EOF
-          echo "→ Cursor: created .cursor/rules/reasoner.mdc"
-        else
-          echo "→ Cursor: .cursor/rules/reasoner.mdc already exists (use --force to overwrite)"
-        fi
+See \`${TARGET}/agent.md\` for the full Reasoner specification.
+Invoke with: \"Reasoner, help me decide: ...\""
+        write_per_host_dispatch ".cursor/rules/${EIDOLON_NAME}.mdc" "$CURSOR_RULE"
+        echo "→ Cursor: wired"
         hosts_wired_arr+=("cursor")
       fi
       ;;
     opencode)
       if [[ "$DRY_RUN" == "true" ]]; then
-        echo "[dry-run] Would create .opencode/agents/reasoner.md"
+        echo "[dry-run] Would write .opencode/agents/${EIDOLON_NAME}.md"
       else
-        mkdir -p ".opencode/agents"
-        local OC_AGENT=".opencode/agents/reasoner.md"
-        if [[ ! -f "$OC_AGENT" || "$FORCE" == "true" ]]; then
-          cat > "$OC_AGENT" <<EOF
----
+        local OC_AGENT="---
 mode: primary
-description: Reasoner — structured deliberation for hard decisions (FORGE methodology)
+description: \"FORGE — structured deliberation for hard decisions\"
 ---
 
-See ${TARGET}/REASONER.md for full rules.
-EOF
-          echo "→ OpenCode: created .opencode/agents/reasoner.md"
-        else
-          echo "→ OpenCode: .opencode/agents/reasoner.md already exists (use --force to overwrite)"
-        fi
+See \`${TARGET}/REASONER.md\` for full rules.
+Reasoning-only — refuses tools, planning, and implementation."
+        write_per_host_dispatch ".opencode/agents/${EIDOLON_NAME}.md" "$OC_AGENT"
+        echo "→ OpenCode: wired"
         hosts_wired_arr+=("opencode")
       fi
       ;;
@@ -249,14 +400,20 @@ if [[ "$HOSTS" != "none" ]]; then
   IFS=',' read -ra HOST_LIST <<< "$HOSTS"
   for h in "${HOST_LIST[@]}"; do
     h="${h// /}"
-    if [[ "$h" == "all" ]]; then
-      for all_h in claude-code copilot cursor opencode; do
-        wire_host "$all_h"
-      done
-    else
-      wire_host "$h"
-    fi
+    case "$h" in
+      ""|raw|none) continue ;;
+    esac
+    wire_host "$h"
   done
+fi
+
+# Shared-dispatch composition into root AGENTS.md (EIIS §4.1).
+if [[ "$MANIFEST_ONLY" != "true" && "$SHARED_DISPATCH" == "true" ]]; then
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo "  [dry-run] upsert eidolon:${EIDOLON_NAME} block in AGENTS.md"
+  else
+    upsert_eidolon_block "AGENTS.md" "$SHARED_BLOCK" "dispatch"
+  fi
 fi
 
 # ──────────────────────────────────────────────────────────
@@ -276,6 +433,14 @@ elif [[ -f "${SCRIPT_DIR}/agent.md" ]]; then
   AGENT_TOKENS=$(wc -w < "${SCRIPT_DIR}/agent.md" | awk '{printf "%d", $1/0.75}')
 fi
 
+# EIIS v1.1 §3.3 / §3.4 — files_written populated array. Empty `[]` is a
+# violation under v1.0 (warn-only) and v1.2 (hard-fail). FORGE accumulates
+# entries via record_file as each path is written.
+FILES_JSON=""
+if [[ ${#FILES_WRITTEN[@]} -gt 0 ]]; then
+  FILES_JSON="$(printf '%s,' "${FILES_WRITTEN[@]}" | sed 's/,$//')"
+fi
+
 if [[ "$DRY_RUN" != "true" ]]; then
   mkdir -p "${TARGET}"
   cat > "${TARGET}/install.manifest.json" <<EOF
@@ -286,7 +451,7 @@ if [[ "$DRY_RUN" != "true" ]]; then
   "installed_at": "${INSTALLED_AT}",
   "target": "${TARGET}",
   "hosts_wired": [${HOSTS_WIRED_JSON}],
-  "files_written": [],
+  "files_written": [${FILES_JSON}],
   "token_budget": {
     "entry": ${AGENT_TOKENS},
     "working_set_target": 1000

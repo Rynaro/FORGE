@@ -1,0 +1,157 @@
+{
+  "eidolon": "forge",
+  "version": "1.1.1",
+  "methodology": "FORGE",
+  "installed_at": "2026-04-26T16:10:13Z",
+  "target": "./agents/reasoner",
+  "hosts_wired": [
+    "claude-code",
+    "copilot",
+    "cursor",
+    "opencode"
+  ],
+  "files_written": [
+    {
+      "path": "./agents/reasoner/REASONER.md",
+      "sha256": "2538c1dbc7853d75dc52106017e56b00da9ce6610f0a15af6925b754527bb15d",
+      "role": "spec",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/SKILL.md",
+      "sha256": "050345e4bbae8da29073c2620e6a905e0c002ee1b629ebaa8529576dcd86f61a",
+      "role": "skill",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/agent.md",
+      "sha256": "bbb2d39ba74e67596353bf9ae7bcc93a3a9ff9dc52cb6b992a41f6f2370a3c67",
+      "role": "entry-point",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/AGENTS.md",
+      "sha256": "17f68cec7670090d966698a0c5aba2126def10ea2dca51e04b3e15b78b49210e",
+      "role": "entry-point",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/CLAUDE.md",
+      "sha256": "a42de29b7d0d7bad0ce1743d2c3ddd57c0bce54a3cc18de5ad2044f26f28283b",
+      "role": "entry-point",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/DESIGN-RATIONALE.md",
+      "sha256": "c5a7c15925c7077b46b16f9f2f788befe5998e1bbaa1f36a1469283f557b7ac9",
+      "role": "other",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/README.md",
+      "sha256": "a630476d18124cdf9f83c17a66a195a80965d8249239e83a5fdef1d12f517fc4",
+      "role": "other",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/skills/framing/SKILL.md",
+      "sha256": "ad0cabe8463df94d5f6e1024fbcf975cacffd5b88146ee5a4462d794d34a2ac6",
+      "role": "skill",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/skills/deliberation/SKILL.md",
+      "sha256": "f07715730c8798856be8bf36225232bcdda0aff2945054924c33c86682b51155",
+      "role": "skill",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/skills/verification/SKILL.md",
+      "sha256": "e029d78a139b4752f30291c6a09861652f4f8484146878109200283fb774580f",
+      "role": "skill",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/templates/verdict.md",
+      "sha256": "7fcb439f9c2feaae2cd53e1f9b83e5edf4274cac22262b2012c6c75d275043da",
+      "role": "template",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/templates/trade-off-analysis.md",
+      "sha256": "9d685163ed7f2c4d98b159196eb3269f97ede7d8945d7636057bf720a28d906f",
+      "role": "template",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/templates/feasibility-assessment.md",
+      "sha256": "fb26a6235435bf4c314cb520248e62a0d21efb2d6dd94b4bd9e1e518eaa5b8d7",
+      "role": "template",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/templates/root-cause-analysis.md",
+      "sha256": "399c8ad9803091039f80a6facc72ce319ab35cd3dca929d86e58b0dc4a35f055",
+      "role": "template",
+      "mode": "created"
+    },
+    {
+      "path": "./agents/reasoner/templates/conflict-resolution.md",
+      "sha256": "f53c217c2aa98a97ce1df58415495d3ddc39c6ed96fab2281bafd0e2514e4f49",
+      "role": "template",
+      "mode": "created"
+    },
+    {
+      "path": ".claude/agents/forge.md",
+      "sha256": "2081b6fb4ffce0e39e382466eed94ae746ec67883c1d7c2f86051e2e435916f2",
+      "role": "dispatch",
+      "mode": "created"
+    },
+    {
+      "path": "CLAUDE.md",
+      "sha256": "c1e73c222dbe55881a99828cd1a63709e2d1da018fa7bb165dacabd681574a67",
+      "role": "dispatch",
+      "mode": "created"
+    },
+    {
+      "path": ".github/instructions/forge.instructions.md",
+      "sha256": "c124f645cc24c3a621c16d9ab7538c729bad0ee897c2a1343dbe963c586fddd2",
+      "role": "dispatch",
+      "mode": "created"
+    },
+    {
+      "path": ".github/copilot-instructions.md",
+      "sha256": "c1e73c222dbe55881a99828cd1a63709e2d1da018fa7bb165dacabd681574a67",
+      "role": "dispatch",
+      "mode": "created"
+    },
+    {
+      "path": ".cursor/rules/forge.mdc",
+      "sha256": "9f01a962d4a9756b7f209e6a2feecccb6c00047367e0f26330dc058dcc86f981",
+      "role": "dispatch",
+      "mode": "created"
+    },
+    {
+      "path": ".opencode/agents/forge.md",
+      "sha256": "572f370a0ca295c417f1d3d5e50ceecd295145325bed7eb1cf18fe83ad90f224",
+      "role": "dispatch",
+      "mode": "created"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "c1e73c222dbe55881a99828cd1a63709e2d1da018fa7bb165dacabd681574a67",
+      "role": "dispatch",
+      "mode": "created"
+    }
+  ],
+  "token_budget": {
+    "entry": 765,
+    "working_set_target": 1000
+  },
+  "security": {
+    "reads_repo": false,
+    "reads_network": false,
+    "writes_repo": false,
+    "persists": []
+  }
+}
