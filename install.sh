@@ -31,10 +31,13 @@ Usage: bash install.sh [OPTIONS]
 
 Options:
   --target DIR          Target install dir (default: ${TARGET})
-  --hosts LIST          claude-code,copilot,cursor,opencode,all (default: auto)
+  --hosts LIST          claude-code,copilot,cursor,opencode,codex,all
+                        (default: auto)
   --shared-dispatch     Compose marker-bounded section in root AGENTS.md /
                         CLAUDE.md / .github/copilot-instructions.md.
   --no-shared-dispatch  Skip root composition (default).
+                        NB: when 'codex' is wired, root AGENTS.md is still
+                        written (EIIS v1.1 §4.1.0 — Codex's primary surface).
   --force               Overwrite existing install
   --dry-run             Print actions, no writes
   --non-interactive     No prompts; fail on ambiguity (meta-installer mode)
@@ -72,6 +75,12 @@ detect_hosts() {
   [[ -d ".github" ]]                           && detected+=("copilot")
   [[ -d ".cursor" || -f ".cursorrules" ]]      && detected+=("cursor")
   [[ -d ".opencode" ]]                         && detected+=("opencode")
+  # Codex (EIIS v1.1 §4.5): .codex/ is the definitive Codex-only signal;
+  # AGENTS.md alone (no .github/, no .codex/) also indicates Codex.
+  [[ -d ".codex" ]]                            && detected+=("codex")
+  if [[ -f "AGENTS.md" && ! -d ".github" && ! -d ".codex" ]]; then
+    detected+=("codex")
+  fi
   if [[ ${#detected[@]} -eq 0 ]]; then
     echo "none"
   else
@@ -82,15 +91,15 @@ detect_hosts() {
 if [[ "$HOSTS" == "auto" ]]; then
   HOSTS="$(detect_hosts)"
 elif [[ "$HOSTS" == "all" ]]; then
-  HOSTS="claude-code,copilot,cursor,opencode"
+  HOSTS="claude-code,copilot,cursor,opencode,codex"
 fi
 
-# Validate the host list (--hosts LIST values per EIIS §2.1).
+# Validate the host list (--hosts LIST values per EIIS §2.1 / §3.2).
 IFS=',' read -ra _HOST_VALIDATE <<< "$HOSTS"
 for _h in "${_HOST_VALIDATE[@]}"; do
   _h="${_h// /}"
   case "$_h" in
-    claude-code|copilot|cursor|opencode|raw|none|all|"") : ;;
+    claude-code|copilot|cursor|opencode|codex|raw|none|all|"") : ;;
     *) echo "Invalid --hosts value: $_h" >&2; exit 2 ;;
   esac
 done
@@ -393,6 +402,33 @@ Reasoning-only — refuses tools, planning, and implementation."
         hosts_wired_arr+=("opencode")
       fi
       ;;
+    codex)
+      if [[ "$DRY_RUN" == "true" ]]; then
+        echo "[dry-run] Would write .codex/agents/${EIDOLON_NAME}.md"
+      else
+        # EIIS v1.1 §4.5 — Codex subagent file. Frontmatter contract:
+        # required name (slug) + description; optional tools, model.
+        # Source: https://developers.openai.com/codex/subagents
+        local CODEX_AGENT="---
+name: ${EIDOLON_NAME}
+description: FORGE — structured deliberation subagent. Runs the Frame → Observe → Reason → Gate → Emit cycle for hard decisions (trade-offs, feasibility, root-cause, conflict resolution). Reasoning-only; refuses tools, exploration, and implementation. Hands off to SPECTRA, APIVR-Δ, ATLAS, or Scribe.
+---
+
+# ${METHODOLOGY} — Codex subagent
+
+Execute the FORGE cycle: **F**rame → **O**bserve → **R**eason → **G**ate →
+**E**mit. You are **reasoning-only** — no tool calls, no file mutations.
+If the parent asks you to plan, implement, scout, or document, request a
+hand-off to the appropriate Eidolon (SPECTRA, APIVR-Δ, ATLAS, Scribe).
+
+Canonical methodology entry: \`${TARGET}/agent.md\`.
+Full ruleset: \`${TARGET}/AGENTS.md\`.
+Phase skills: \`${TARGET}/skills/<phase>/SKILL.md\` — load only the active phase."
+        write_per_host_dispatch ".codex/agents/${EIDOLON_NAME}.md" "$CODEX_AGENT"
+        echo "→ Codex: wired"
+        hosts_wired_arr+=("codex")
+      fi
+      ;;
   esac
 }
 
@@ -407,12 +443,25 @@ if [[ "$HOSTS" != "none" ]]; then
   done
 fi
 
-# Shared-dispatch composition into root AGENTS.md (EIIS §4.1).
-if [[ "$MANIFEST_ONLY" != "true" && "$SHARED_DISPATCH" == "true" ]]; then
+# EIIS v1.1 §4.1.0 — root AGENTS.md is co-owned by `copilot` and `codex`.
+# Compose the marker-bounded block when --shared-dispatch is set, OR when
+# `codex` is wired (regardless of --shared-dispatch — Codex's primary
+# instruction surface). The same block content keeps the rewrite path
+# byte-identical between runs (§4.1.2).
+codex_in_hosts=false
+for h in "${hosts_wired_arr[@]}"; do
+  [[ "$h" == "codex" ]] && codex_in_hosts=true
+done
+
+if [[ "$MANIFEST_ONLY" != "true" ]] && \
+   { [[ "$SHARED_DISPATCH" == "true" ]] || [[ "$codex_in_hosts" == "true" ]]; }; then
   if [[ "$DRY_RUN" == "true" ]]; then
     echo "  [dry-run] upsert eidolon:${EIDOLON_NAME} block in AGENTS.md"
   else
     upsert_eidolon_block "AGENTS.md" "$SHARED_BLOCK" "dispatch"
+    if [[ "$SHARED_DISPATCH" != "true" && "$codex_in_hosts" == "true" ]]; then
+      echo "  Note: AGENTS.md written for codex co-ownership (EIIS v1.1 §4.1.0)" >&2
+    fi
   fi
 fi
 

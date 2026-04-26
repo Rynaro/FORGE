@@ -2,13 +2,14 @@
   "eidolon": "forge",
   "version": "1.1.1",
   "methodology": "FORGE",
-  "installed_at": "2026-04-26T16:10:13Z",
+  "installed_at": "2026-04-26T16:08:41Z",
   "target": "./agents/reasoner",
   "hosts_wired": [
     "claude-code",
     "copilot",
     "cursor",
-    "opencode"
+    "opencode",
+    "codex"
   ],
   "files_written": [
     {
@@ -134,6 +135,12 @@
     {
       "path": ".opencode/agents/forge.md",
       "sha256": "572f370a0ca295c417f1d3d5e50ceecd295145325bed7eb1cf18fe83ad90f224",
+      "role": "dispatch",
+      "mode": "created"
+    },
+    {
+      "path": ".codex/agents/forge.md",
+      "sha256": "091d7efb25fa7aadbc9d6302b6a8fd7d0888667f819b6aa51bfb4f8067f26ae7",
       "role": "dispatch",
       "mode": "created"
     },
