@@ -190,4 +190,4 @@ The remaining context budget is available for the evidence the Reasoner needs to
 
 ---
 
-*Reasoner v1.1.1 — Design Rationale*
+*Reasoner v1.2.0 — Design Rationale*

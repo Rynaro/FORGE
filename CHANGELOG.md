@@ -4,6 +4,23 @@
 
 _Nothing yet._
 
+## [1.2.0] - 2026-04-26 — EIIS-1.1 conformance + Codex host + drift closures
+
+### Added
+- **OpenAI Codex host support** (EIIS v1.1 §4.5) — `--hosts codex` writes a marker-bounded section into root `AGENTS.md` and a per-Eidolon `.codex/agents/forge.md` subagent file with required `name` / `description` frontmatter. Body mirrors the Claude subagent prompt. `--hosts all` now expands to include `codex`.
+- **`EIIS_VERSION`** file at repo root, declaring conformance with EIIS v1.1 (closes drift D-6).
+
+### Changed
+- **`install.sh` parses `--shared-dispatch` / `--no-shared-dispatch`** per EIIS §2 (closes drift **D-1**). Default is `--shared-dispatch` when `codex` is wired (override-with-warn for `--no-shared-dispatch`); for non-codex flows the legacy default is preserved.
+- **All shared-host writes are now marker-bounded** (closes drift **D-4**) — every block FORGE emits into `CLAUDE.md`, `.github/copilot-instructions.md`, and `AGENTS.md` lives inside `<!-- eidolon:forge start --> … <!-- eidolon:forge end -->`. `eidolons remove` can now strip FORGE cleanly. Legacy non-marker FORGE content from v1.1.1 is left intact and a new marker-bounded block is appended; consumers can manually delete the legacy paragraph if desired.
+- **`install.manifest.json` `files_written`** is now populated with one entry per file written, each with `path`, `sha256`, and `role` (closes drift **D-3**).
+- **EIIS conformance** — `bash conformance/check.sh` against this repo now exits **0** (was exit 2 hard-fail on D-4 in v1.1.1).
+- Version bumped across `install.sh`, `agent.md`, `AGENTS.md`, `README.md`, `REASONER.md`, `DESIGN-RATIONALE.md`, `SKILL.md`, all `templates/*.md`, and `skills/*/SKILL.md`.
+
+### Cross-cuts
+
+- Tracks `Rynaro/eidolons-eiis@v1.1.0` (Codex addendum) and `Rynaro/eidolons#21` (nexus codex host wiring).
+
 ## [1.1.1] - 2026-04-23 — EIIS-1.0 conformance
 
 ### Added
