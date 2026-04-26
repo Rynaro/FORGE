@@ -20,6 +20,10 @@ FORCE=false
 DRY_RUN=false
 NON_INTERACTIVE=false
 MANIFEST_ONLY=false
+# EIIS v1.1 §2.2 / §2.3 — shared-dispatch flag (SHOULD in v1.0 / v1.1,
+# promoted to MUST in v1.2). Default mirrors EIIS skeleton: false (per-host
+# vendor files are self-sufficient; root composition is opt-in).
+SHARED_DISPATCH=false
 
 usage() {
   cat <<EOF
@@ -27,7 +31,13 @@ Usage: bash install.sh [OPTIONS]
 
 Options:
   --target DIR          Target install dir (default: ${TARGET})
-  --hosts LIST          claude-code,copilot,cursor,opencode,all (default: auto)
+  --hosts LIST          claude-code,copilot,cursor,opencode,codex,all
+                        (default: auto)
+  --shared-dispatch     Compose marker-bounded section in root AGENTS.md /
+                        CLAUDE.md / .github/copilot-instructions.md.
+  --no-shared-dispatch  Skip root composition (default).
+                        NB: when 'codex' is wired, root AGENTS.md is still
+                        written (EIIS v1.1 §4.1.0 — Codex's primary surface).
   --force               Overwrite existing install
   --dry-run             Print actions, no writes
   --non-interactive     No prompts; fail on ambiguity (meta-installer mode)
@@ -40,15 +50,17 @@ EOF
 # --- arg parsing (legacy positional arg supported with deprecation warning) ---
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --target)           TARGET="$2"; shift 2 ;;
-    --hosts)            HOSTS="$2"; shift 2 ;;
-    --force)            FORCE=true; shift ;;
-    --dry-run)          DRY_RUN=true; shift ;;
-    --non-interactive)  NON_INTERACTIVE=true; shift ;;
-    --manifest-only)    MANIFEST_ONLY=true; shift ;;
-    --version)          echo "${EIDOLON_VERSION}"; exit 0 ;;
-    -h|--help)          usage; exit 0 ;;
-    -*)                 echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
+    --target)             TARGET="$2"; shift 2 ;;
+    --hosts)              HOSTS="$2"; shift 2 ;;
+    --shared-dispatch)    SHARED_DISPATCH=true; shift ;;
+    --no-shared-dispatch) SHARED_DISPATCH=false; shift ;;
+    --force)              FORCE=true; shift ;;
+    --dry-run)            DRY_RUN=true; shift ;;
+    --non-interactive)    NON_INTERACTIVE=true; shift ;;
+    --manifest-only)      MANIFEST_ONLY=true; shift ;;
+    --version)            echo "${EIDOLON_VERSION}"; exit 0 ;;
+    -h|--help)            usage; exit 0 ;;
+    -*)                   echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
     *)
       TARGET="$1"
       echo "Warning: positional target is deprecated; use --target DIR instead" >&2
