@@ -7,7 +7,8 @@
 
 ## [Unreleased]
 
-_Nothing yet._
+### Added
+- **Release-integrity workflow** — `.github/workflows/release.yml` adopts the eidolons-nexus reusable release template (`Rynaro/eidolons/.github/workflows/eidolon-release-template.yml@main`). On `workflow_dispatch` with a SemVer version input, the workflow runs EIIS conformance against the tagged tree, builds a release manifest (commit, tree, `archive_sha256`, and `manifest_sha256` when `install.manifest.json` exists at repo root — currently `null` for FORGE), creates and pushes the annotated tag, attests artifacts via GitHub's provenance API, and publishes the GitHub Release with `source.tar`, `release-manifest.json`, and `SHA256SUMS`. Pairs with the nexus's `Roster Intake` workflow which ingests the release and opens a PR populating `versions.releases.<X.Y.Z>` in `roster/index.yaml`. Pre-cursor to `eidolons verify` flipping from `integrity.enforcement: warn` to `strict` once all six shipped Eidolons have published release metadata.
 
 ## [1.2.0] - 2026-04-26 — EIIS-1.1 conformance + Codex host + drift closures
 

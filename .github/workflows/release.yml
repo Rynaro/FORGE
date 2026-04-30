@@ -1,0 +1,44 @@
+name: Release
+
+# Adopts the eidolons-nexus release-integrity contract for FORGE.
+# Reuses the canonical release template from Rynaro/eidolons:
+#   .github/workflows/eidolon-release-template.yml
+#
+# The template:
+#   1. Runs EIIS conformance against the tagged tree.
+#   2. Builds release metadata (commit, tree, archive_sha256,
+#      manifest_sha256 if install.manifest.json exists at repo root).
+#   3. Creates the annotated tag vX.Y.Z and pushes it.
+#   4. Attests the release artifacts via GitHub's provenance API.
+#   5. Publishes the GitHub Release with source.tar, release-manifest.json,
+#      and SHA256SUMS attached.
+#
+# The nexus's Roster Intake workflow then ingests this release and opens a
+# PR against roster/index.yaml that populates versions.releases.<X.Y.Z>.
+#
+# Trigger: workflow_dispatch with a SemVer version input. FORGE has no
+# repo-root install.manifest.json, so manifest_sha256 will be null in the
+# release manifest (schema-allowed under the current release-integrity
+# contract). Tree, commit, and archive_sha256 are populated.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: SemVer version to release (without leading v), e.g. 1.2.2
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+jobs:
+  release:
+    uses: Rynaro/eidolons/.github/workflows/eidolon-release-template.yml@main
+    with:
+      version: ${{ inputs.version }}
+      eiis-version: "1.1"
+    secrets: inherit
