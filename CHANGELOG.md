@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.3.0] - 2026-05-11 — ECL v1.0 envelope emission
+
+### Added
+- **ECL v1.0 conformance** — FORGE now emits ECL v1.0 envelopes
+  alongside every `reasoning-report`. New `ECL_VERSION` file at repo
+  root. New `schemas/reasoning-report-profile.v1.json` (vendored from
+  `eidolons-ecl/schemas/per-eidolon/reasoning-report.v1.json`). New
+  `schemas/ecl-envelope.v1.json` (vendored with performative enum and
+  `context-delta` body inlined). New
+  `templates/reasoning-report.envelope.json` skeleton.
+- **Profile validates FORGE P0 floors** — `hypotheses_count >= 3`,
+  `1 <= passes_used <= 3`, `reversal_conditions: minItems 1`. A
+  conformance check on any emitted `reasoning-report` enforces the
+  three non-negotiable rules from outside FORGE's own tooling.
+- **`install.manifest.json` `ecl` block** — declares
+  `envelope_version`, `outbound_artifacts`, `inbound_artifacts`. Schema
+  hand-extended in `schemas/install.manifest.v1.json` until EIIS v1.2
+  promotes the field.
+
+### Changed
+- **`AGENTS.md` adds P0 rule #10** — ECL envelope on every emission.
+- **`REASONER.md` §"E — Emit"** — Emit is now the envelope-bearing
+  phase. New §7 ECL compatibility.
+- **`DESIGN-RATIONALE.md`** — new section explaining single outbound
+  profile, base-profile-only inbound, and P0-floor encoding choices.
+- **All five decision templates** — added YAML frontmatter block
+  declaring ECL artefact-kind `reasoning-report` and P0 floor fields.
+- **`skills/verification/SKILL.md`** — added Envelope Construction
+  Checklist for the Emit phase.
+
+### Cross-cuts
+- Tracks `Rynaro/eidolons-ecl@v1.0.1` (the v1.0.1 patch enumerating the
+  eight deferred lateral contracts).
+- Tracks `Rynaro/eidolons` roster: `forge` versions.latest 1.2.1 →
+  1.3.0 in a separate `fix/roster-forge-1-3-0` PR.
+
 ## [1.2.1] - 2026-04-26 — Re-vendor EIIS v1.1 schema (codex enum)
 
 ### Fixed

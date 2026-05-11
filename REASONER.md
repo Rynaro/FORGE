@@ -70,6 +70,19 @@ Deliver the verdict using the appropriate template from `templates/`. Always inc
 - Conditions that would change the verdict
 - Handoff recommendations (→ SPECTRA, → APIVR-Δ, → ATLAS, → human)
 
+**ECL envelope (v1.3.0+).** When the verdict will be returned to a
+requesting Eidolon (i.e. the deliberation was triggered by an
+incoming `reasoning-request` envelope), emit the
+`reasoning-report` body and a sidecar envelope
+(`<basename>.envelope.json`) per
+[ECL v1.0 §1](https://github.com/Rynaro/eidolons-ecl/blob/v1.0.0/spec/ecl-1.0.md#1--envelope).
+The envelope's `parent_id` MUST be the `message_id` of the inbound
+request; `thread_id` MUST be inherited from the inbound request.
+Schema: `schemas/ecl-envelope.v1.json`. Body schema:
+`schemas/reasoning-report-profile.v1.json`. Performative defaults
+to `PROPOSE`; use `CRITIQUE` only on REFORGE-reframe paths, and
+`INFORM` for no-action verdicts.
+
 ## Structural Markers
 
 | Marker | Meaning |
@@ -139,4 +152,23 @@ The Reasoner holds no tools, retrieves nothing, writes to no external store, and
 
 ---
 
-*Reasoner v1.2.0*
+## 7 — ECL compatibility
+
+FORGE v1.3.0 is the first version that emits ECL v1.0 envelopes.
+The conformance contract is recorded in `ECL_VERSION` at the repo
+root. Outbound: `reasoning-report` (validated by
+`schemas/reasoning-report-profile.v1.json`). Inbound:
+`reasoning-request` (envelope validated by
+`schemas/ecl-envelope.v1.json`; body shape is methodology-owned —
+FORGE's Frame phase extracts question/context/constraints from the
+body Markdown).
+
+FORGE's profile enforces the three P0 floors as machine-checkable
+constraints: `hypotheses_count >= 3`, `1 <= passes_used <= 3`,
+`reversal_conditions[] non-empty`. Conformance failures produce
+`verify_fail` trace events with `verify_failure_code: SCHEMA_INVALID`
+per ECL §5.3.
+
+---
+
+*Reasoner v1.3.0*

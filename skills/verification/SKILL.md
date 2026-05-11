@@ -143,6 +143,25 @@ After REFORGE, emit regardless. Flag remaining issues explicitly. The requester 
 
 ---
 
+## Envelope Construction Checklist (ECL v1.0, v1.3.0+)
+
+When the deliberation was triggered by an incoming `reasoning-request` envelope,
+the Emit phase MUST produce both the body file and a sidecar envelope. Run this
+checklist before emitting:
+
+1. **Compute sha256** of the `reasoning-report.md` body bytes (lowercase hex, 64 chars).
+2. **Inherit `thread_id`** from the inbound `reasoning-request` envelope — carry it unchanged into the outbound envelope.
+3. **Set `parent_id`** to the inbound request's `message_id` (the UUID from the request envelope, not the thread_id).
+4. **Populate `context_delta.tokens_used`** — heuristic `chars / 4` is acceptable per ECL §4.2 when exact token counts are unavailable.
+5. **Mirror confidence** — set `envelope.confidence` to the composite confidence score from the 4-factor calibration (Evidence quality, Logical coherence, Constraint coverage, Sensitivity analysis), normalised to 0–1.
+6. **Select performative**: `PROPOSE` (default), `CRITIQUE` (REFORGE-reframe path where the question itself is being challenged), `INFORM` (no-action finding — all options equivalent within constraints).
+7. **Append `emit` trace event** to `.eidolons/.trace/<thread_id>.jsonl` per ECL §5.
+8. Validate the sidecar against `schemas/ecl-envelope.v1.json` before writing.
+
+The envelope template is at `templates/reasoning-report.envelope.json`.
+
+---
+
 ## Provenance Block
 
 Every emitted verdict includes:
@@ -161,4 +180,4 @@ Every emitted verdict includes:
 
 ---
 
-*Reasoner v1.2.0 — Verification Skill*
+*Reasoner v1.3.0 — Verification Skill*
