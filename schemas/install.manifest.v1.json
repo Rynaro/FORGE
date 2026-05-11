@@ -131,6 +131,26 @@
         }
       },
       "additionalProperties": false
+    },
+    "ecl": {
+      "type": "object",
+      "required": ["envelope_version"],
+      "properties": {
+        "envelope_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+        },
+        "outbound_artifacts": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+        },
+        "inbound_artifacts": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+        }
+      },
+      "additionalProperties": false,
+      "description": "ECL envelope conformance block. Hand-extended for v1.3.0 pending EIIS v1.2 promotion of ecl as a first-class manifest field."
     }
   },
   "additionalProperties": false

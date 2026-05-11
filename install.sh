@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ──────────────────────────────────────────────────────────
-# Reasoner v1.2.0 — Install Script (EIIS-1.0 conformant)
+# Reasoner v1.3.0 — Install Script (EIIS-1.0 conformant)
 #
 # Installs the Reasoner deliberation agent into any project.
 # Usage: bash install.sh [OPTIONS]
@@ -10,8 +10,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
-EIDOLON_VERSION="1.2.1"
+EIDOLON_VERSION="1.3.0"
 METHODOLOGY="FORGE"
+
+if [[ -f "$SCRIPT_DIR/ECL_VERSION" ]]; then
+  ECL_VERSION="$(tr -d '[:space:]' < "$SCRIPT_DIR/ECL_VERSION")"
+else
+  ECL_VERSION="none"
+fi
 
 # --- defaults ---
 TARGET="./agents/reasoner"
@@ -157,6 +163,8 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     echo "[dry-run] Would copy: REASONER.md, SKILL.md, agent.md, AGENTS.md, CLAUDE.md, DESIGN-RATIONALE.md, README.md"
     echo "[dry-run] Would copy: skills/framing/SKILL.md, skills/deliberation/SKILL.md, skills/verification/SKILL.md"
     echo "[dry-run] Would copy: templates/verdict.md, trade-off-analysis.md, feasibility-assessment.md, root-cause-analysis.md, conflict-resolution.md"
+    echo "[dry-run] Would copy: templates/reasoning-report.envelope.json"
+    echo "[dry-run] Would copy: schemas/reasoning-report-profile.v1.json, schemas/ecl-envelope.v1.json"
     echo ""
   else
     # Create target directory
@@ -165,6 +173,7 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     mkdir -p "$TARGET/skills/deliberation"
     mkdir -p "$TARGET/skills/verification"
     mkdir -p "$TARGET/templates"
+    mkdir -p "$TARGET/schemas"
 
     # copy_tracked <src-rel> <dst> <role>
     copy_tracked() {
@@ -193,6 +202,11 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     copy_tracked "templates/feasibility-assessment.md"  "$TARGET/templates/feasibility-assessment.md" "template"
     copy_tracked "templates/root-cause-analysis.md"     "$TARGET/templates/root-cause-analysis.md"    "template"
     copy_tracked "templates/conflict-resolution.md"     "$TARGET/templates/conflict-resolution.md"    "template"
+    copy_tracked "templates/reasoning-report.envelope.json"  "$TARGET/templates/reasoning-report.envelope.json"  "template"
+
+    # Copy ECL schemas (v1.3.0+)
+    copy_tracked "schemas/reasoning-report-profile.v1.json"  "$TARGET/schemas/reasoning-report-profile.v1.json"  "schema"
+    copy_tracked "schemas/ecl-envelope.v1.json"              "$TARGET/schemas/ecl-envelope.v1.json"              "schema"
 
     echo "✓ Core files installed to $TARGET"
     echo ""
@@ -490,6 +504,16 @@ if [[ ${#FILES_WRITTEN[@]} -gt 0 ]]; then
   FILES_JSON="$(printf '%s,' "${FILES_WRITTEN[@]}" | sed 's/,$//')"
 fi
 
+ECL_BLOCK=""
+if [[ "$ECL_VERSION" != "none" ]]; then
+  ECL_BLOCK=",
+  \"ecl\": {
+    \"envelope_version\": \"${ECL_VERSION}\",
+    \"outbound_artifacts\": [\"reasoning-report\"],
+    \"inbound_artifacts\":  [\"reasoning-request\"]
+  }"
+fi
+
 if [[ "$DRY_RUN" != "true" ]]; then
   mkdir -p "${TARGET}"
   cat > "${TARGET}/install.manifest.json" <<EOF
@@ -510,7 +534,7 @@ if [[ "$DRY_RUN" != "true" ]]; then
     "reads_network": false,
     "writes_repo": false,
     "persists": []
-  }
+  }${ECL_BLOCK}
 }
 EOF
   echo "✓ Manifest written to ${TARGET}/install.manifest.json"

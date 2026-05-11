@@ -190,4 +190,40 @@ The remaining context budget is available for the evidence the Reasoner needs to
 
 ---
 
-*Reasoner v1.2.0 — Design Rationale*
+## ECL v1.0 adoption (v1.3.0)
+
+### Why a single outbound profile
+
+FORGE's outbound shape is uniform across all eight `forge→*` edges — the body
+is always a `reasoning-report`, only `to.eidolon` varies. Vendoring one profile
+(`schemas/reasoning-report-profile.v1.json`) preserves the strict-subset rule
+from the ECL per-Eidolon README and avoids combinatorial explosion. A FORGE
+reasoning-report is structurally identical whether it goes to APIVR-Δ, ATLAS,
+SPECTRA, IDG, or VIGIL; what differs is the requesting context, not the answer
+shape.
+
+### Why the inbound profile is base-profile-only
+
+Reasoning requests arrive in many flavours: trade-off, feasibility, root-cause,
+conflict resolution, constraint satisfaction. Pinning a tight inbound schema
+would lock the methodology into one Frame-phase shape and provide no extra
+validation value. The `apivr-to-forge.yaml` contract already records this
+intent: `schema_ref: ../schemas/per-eidolon/_base-profile.v1.json` (base-profile
+only). FORGE's Frame phase extracts `question/context/constraints` from the
+body Markdown sections — the methodology owns body validation, not the schema
+layer. This matches the strict-subset divide between ECL profiles and per-Eidolon
+validators.
+
+### Why P0 floors are encoded in the profile
+
+The three floors (≥3 hypotheses, ≤3 passes, ≥1 reversal-condition) are FORGE's
+defining quality bar. Encoding them in the profile rather than only in prose
+makes them auditable from outside FORGE's own tooling — a conformance check on
+a `reasoning-report` artefact can refuse a non-FORGE document that pretends to
+be one. This aligns with the EU AI Act's structured decision-logging requirements
+(noted in §3 Structural Markers above) and with the team's broader move toward
+machine-checkable P0 invariants across the Eidolon suite.
+
+---
+
+*Reasoner v1.3.0 — Design Rationale*

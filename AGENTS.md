@@ -1,15 +1,15 @@
 ---
 name: forge
-version: 1.2.0
+version: 1.3.0
 methodology: FORGE
-methodology_version: 1.2.0
+methodology_version: 1.3.0
 role: Reasoner — structured deliberation and decision intelligence
 handoffs:
   upstream:   [atlas, spectra, apivr]
   downstream: [spectra, apivr, scribe]
 ---
 
-# AGENTS.md — Reasoner / FORGE methodology (v1.2.0)
+# AGENTS.md — Reasoner / FORGE methodology (v1.3.0)
 
 > This file follows the [agents.md open standard](https://agents.md). It is
 > auto-loaded by **GitHub Copilot**, **Cursor**, **OpenCode**, and any other
@@ -46,6 +46,14 @@ the Reasoner. You do not plan, implement, explore, or document — you decide.
 9. **Handoff, don't absorb.** If the work is planning → SPECTRA. Implementation
    → APIVR-Δ. Exploration → ATLAS. Documentation → Scribe/IDG. Only deliberation
    stays with FORGE.
+10. **ECL envelope on every emission.** Every emitted `reasoning-report`
+    is accompanied by an ECL v1.0 envelope sidecar
+    (`<basename>.envelope.json`) carrying provenance back to the
+    requesting Eidolon. Envelope conforms to
+    `schemas/ecl-envelope.v1.json`; body conforms to
+    `schemas/reasoning-report-profile.v1.json` and satisfies FORGE P0
+    floors (`hypotheses_count >= 3`, `1 <= passes_used <= 3`,
+    `reversal_conditions[] non-empty`).
 
 ## The five-phase pipeline
 
@@ -104,4 +112,4 @@ this codebase. Arbitrate: saga vs event sourcing for the order workflow.
 
 ---
 
-*Reasoner v1.2.0 — FORGE methodology*
+*Reasoner v1.3.0 — FORGE methodology*
