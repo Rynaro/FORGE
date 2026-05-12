@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.3.1] — 2026-05-12 — Declare ECL v1.2 conformance
+
+### Changed
+- `ECL_VERSION` file: `1.0` → `1.2`. Targets the latest ECL spec
+  (`Rynaro/eidolons-ecl@v1.2.0`); FORGE's emit envelopes remain
+  byte-compatible (v1.2 is backward-compatible with v1.0 per ECL §1.1.1).
+- `agent.md` frontmatter: `ecl.envelope_version` `"1.0"` → `"1.2"`.
+- `install.sh`: `EIDOLON_VERSION` `1.3.0` → `1.3.1` (PATCH bump —
+  declaration-only change; no behaviour change).
+
+### Notes
+- No envelope-format changes. v1.0 envelopes already emitted by older
+  FORGE releases are valid under v1.2 conformance.
+- FORGE's `reasoning-report` emit edges (forge → apivr / atlas / spectra /
+  idg / vigil) use `trust_level=standard` per the contracts in
+  `Rynaro/eidolons-ecl@v1.0.1/contracts/`. The new ECL v1.1 gate I-5
+  SHOULD-level warn (high+sha256) does not fire for FORGE emissions.
+- Inbound `reasoning-request` verification (from any consulting Eidolon)
+  continues to accept v1.0/v1.1/v1.2 envelopes.
+
 ## [1.3.0] - 2026-05-11 — ECL v1.0 envelope emission
 
 ### Added

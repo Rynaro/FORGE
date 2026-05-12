@@ -10,7 +10,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
-EIDOLON_VERSION="1.3.0"
+EIDOLON_VERSION="1.3.1"
 METHODOLOGY="FORGE"
 
 if [[ -f "$SCRIPT_DIR/ECL_VERSION" ]]; then
