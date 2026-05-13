@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.3.2] — 2026-05-13 — declare ECL v2.0 conformance
+
+### Changed
+- `ECL_VERSION` file: `1.2` → `2.0`. Targets the ECL v2.0 spec
+  (`Rynaro/eidolons-ecl@v2.0.0`; see `spec/ecl-2.0.md`, introducing the
+  ISE trust hierarchy). FORGE emit envelopes remain byte-compatible
+  (ECL v2.0 is backward-compatible per ECL §7.3, window through 2027-05-13).
+- `agent.md` frontmatter: `ecl.envelope_version` `"1.2"` → `"2.0"`.
+- `install.sh`: `EIDOLON_VERSION` `1.3.1` → `1.3.2` (PATCH bump —
+  declaration-only change; no behaviour change, no schema change, no
+  envelope-shape change).
+
+### Notes
+- Declaration-only patch bump. No envelope-format changes.
+- AGENTS.md has no ecl/comm block in its frontmatter (FORGE convention — preserved).
+- Companion patches: ATLAS v1.5.2 ✓, SPECTRA v4.3.2 ✓, APIVR-Δ v3.1.2 ✓,
+  IDG v1.2.2 ✓ all released; VIGIL follows.
+
 ## [1.3.1] — 2026-05-12 — Declare ECL v1.2 conformance
 
 ### Changed

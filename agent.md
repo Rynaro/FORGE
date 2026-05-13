@@ -8,7 +8,7 @@ methodology_version: "1.3.0"
 role: Reasoner — structured deliberation and decision intelligence
 handoffs: [spectra, apivr, atlas, scribe]
 ecl:
-  envelope_version: "1.2"
+  envelope_version: "2.0"
   outbound_artifacts: [reasoning-report]
   inbound_artifacts:  [reasoning-request]
 ---
