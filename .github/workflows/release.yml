@@ -34,6 +34,7 @@ permissions:
   id-token: write
   attestations: write
   artifact-metadata: write
+  packages: write
 
 jobs:
   release:
