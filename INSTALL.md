@@ -74,7 +74,7 @@ See .eidolons/forge/agent.md for the full specification.
 
 ### OpenCode
 
-1. Run `bash install.sh --hosts opencode` — creates `.opencode/agents/reasoner.md`
+1. Run `bash install.sh --hosts opencode` — creates `.opencode/agents/forge.md`
 2. Or create manually:
 
 ```markdown

@@ -46,13 +46,13 @@ Default target: `./.eidolons/forge`. Then point your AI tooling at the installed
 ### Alternative: Git submodule
 
 ```bash
-git submodule add https://github.com/Rynaro/reasoner agents/reasoner
+git submodule add https://github.com/Rynaro/reasoner .eidolons/forge
 ```
 
 ### Alternative: Direct copy
 
 ```bash
-cp -r reasoner/ your-project/agents/reasoner/
+cp -r reasoner/ your-project/.eidolons/forge/
 ```
 
 All internal paths are relative. Works from any location.
