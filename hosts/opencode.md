@@ -3,14 +3,14 @@
 ## 1. Install
 
 ```bash
-bash install.sh --target ./agents/reasoner --hosts opencode
+bash install.sh --target ./.eidolons/forge --hosts opencode
 ```
 
-The installer creates `.opencode/agents/reasoner.md` in your project.
+The installer creates `.opencode/agents/forge.md` in your project.
 
 ## 2. Config
 
-**`.opencode/agents/reasoner.md`:**
+**`.opencode/agents/forge.md`:**
 
 ```markdown
 ---
@@ -18,7 +18,7 @@ mode: primary
 description: Reasoner — structured deliberation for hard decisions (FORGE methodology)
 ---
 
-See agents/reasoner/REASONER.md for the full specification.
+See .eidolons/forge/SPEC.md for the full specification.
 
 Non-negotiable (P0): reasoning-only (no tools), frame first, ≥3 hypotheses,
 adversarial self-testing, evidence-anchored claims, bounded deliberation,
@@ -69,7 +69,7 @@ mutate state. It reasons only from context provided by the user.
 **"Full FORGE cycle not followed"**  
 Reference the full spec:
 ```
-@agents/reasoner/REASONER.md
+@.eidolons/forge/SPEC.md
 
 FORGE, [question]
 ```

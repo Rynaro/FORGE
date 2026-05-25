@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ──────────────────────────────────────────────────────────
-# Reasoner v1.3.0 — Install Script (EIIS-1.0 conformant)
+# Reasoner v1.4.0 — Install Script (EIIS-1.3 conformant)
 #
 # Installs the Reasoner deliberation agent into any project.
 # Usage: bash install.sh [OPTIONS]
@@ -10,7 +10,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
-EIDOLON_VERSION="1.3.2"
+EIDOLON_SLUG="forge"
+EIDOLON_VERSION="1.4.0"
 METHODOLOGY="FORGE"
 
 if [[ -f "$SCRIPT_DIR/ECL_VERSION" ]]; then
@@ -20,7 +21,7 @@ else
 fi
 
 # --- defaults ---
-TARGET="./agents/reasoner"
+TARGET="./.eidolons/forge"
 HOSTS="auto"
 FORCE=false
 DRY_RUN=false
@@ -160,8 +161,9 @@ fi
 if [[ "$MANIFEST_ONLY" != "true" ]]; then
   if [[ "$DRY_RUN" == "true" ]]; then
     echo "[dry-run] Would create: ${TARGET}/"
-    echo "[dry-run] Would copy: REASONER.md, SKILL.md, agent.md, AGENTS.md, CLAUDE.md, DESIGN-RATIONALE.md, README.md"
-    echo "[dry-run] Would copy: skills/framing/SKILL.md, skills/deliberation/SKILL.md, skills/verification/SKILL.md"
+    echo "[dry-run] Would copy: SPEC.md, SKILL.md, agent.md, CLAUDE.md, DESIGN-RATIONALE.md, README.md"
+    echo "[dry-run] Would copy: skills/framing.md, skills/deliberation.md, skills/verification.md"
+    echo "[dry-run] Would wire skills to .claude/skills/forge-<phase>/SKILL.md"
     echo "[dry-run] Would copy: templates/verdict.md, trade-off-analysis.md, feasibility-assessment.md, root-cause-analysis.md, conflict-resolution.md"
     echo "[dry-run] Would copy: templates/reasoning-report.envelope.json"
     echo "[dry-run] Would copy: schemas/reasoning-report-profile.v1.json, schemas/ecl-envelope.v1.json"
@@ -169,9 +171,7 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
   else
     # Create target directory
     mkdir -p "$TARGET"
-    mkdir -p "$TARGET/skills/framing"
-    mkdir -p "$TARGET/skills/deliberation"
-    mkdir -p "$TARGET/skills/verification"
+    mkdir -p "$TARGET/skills"
     mkdir -p "$TARGET/templates"
     mkdir -p "$TARGET/schemas"
 
@@ -182,19 +182,48 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
       record_file "$dst" "$role" "created"
     }
 
+    # wire_skill <skill_name>
+    #
+    # Dual-writes a skill file (EIIS v1.3 §4.2.4):
+    #   - source-of-truth: ${TARGET}/skills/<skill_name>.md
+    #   - vendor copy:     .claude/skills/${EIDOLON_SLUG}-<skill_name>/SKILL.md
+    #
+    # Source file resolved as: ${SCRIPT_DIR}/skills/<skill_name>.md
+    # Records both files in FILES_WRITTEN with role "skill".
+    wire_skill() {
+      local skill="$1"
+      local src="${SCRIPT_DIR}/skills/${skill}.md"
+      local dst_src="${TARGET}/skills/${skill}.md"
+      local dst_vendor=".claude/skills/${EIDOLON_SLUG}-${skill}/SKILL.md"
+
+      if [ ! -f "${src}" ]; then
+        echo "ERROR: skill source not found: ${src}" >&2
+        exit 1
+      fi
+
+      mkdir -p "$(dirname "${dst_src}")"
+      mkdir -p "$(dirname "${dst_vendor}")"
+
+      copy_tracked "skills/${skill}.md" "${dst_src}" "skill"
+
+      if printf '%s\n' "${HOSTS}" | grep -q 'claude-code'; then
+        cp "${src}" "${dst_vendor}"
+        record_file "${dst_vendor}" "skill" "created"
+      fi
+    }
+
     # Copy core files
-    copy_tracked "REASONER.md"          "$TARGET/REASONER.md"          "spec"
+    copy_tracked "SPEC.md"              "$TARGET/SPEC.md"              "spec"
     copy_tracked "SKILL.md"             "$TARGET/SKILL.md"             "skill"
     copy_tracked "agent.md"             "$TARGET/agent.md"             "entry-point"
-    copy_tracked "AGENTS.md"            "$TARGET/AGENTS.md"            "entry-point"
     copy_tracked "CLAUDE.md"            "$TARGET/CLAUDE.md"            "entry-point"
     copy_tracked "DESIGN-RATIONALE.md"  "$TARGET/DESIGN-RATIONALE.md"  "other"
     copy_tracked "README.md"            "$TARGET/README.md"            "other"
 
-    # Copy skills
-    copy_tracked "skills/framing/SKILL.md"        "$TARGET/skills/framing/SKILL.md"       "skill"
-    copy_tracked "skills/deliberation/SKILL.md"   "$TARGET/skills/deliberation/SKILL.md"  "skill"
-    copy_tracked "skills/verification/SKILL.md"   "$TARGET/skills/verification/SKILL.md"  "skill"
+    # Copy skills (dual-write: source-of-truth + .claude/skills/ vendor copy)
+    wire_skill "framing"
+    wire_skill "deliberation"
+    wire_skill "verification"
 
     # Copy templates
     copy_tracked "templates/verdict.md"                 "$TARGET/templates/verdict.md"                "template"
@@ -299,7 +328,7 @@ upsert_eidolon_block() {
 SHARED_BLOCK="## FORGE — Reasoner / structured deliberation (v${EIDOLON_VERSION})
 
 Entry: \`${TARGET}/agent.md\`
-Spec:  \`${TARGET}/REASONER.md\`
+Spec:  \`${TARGET}/SPEC.md\`
 Cycle: F (Frame) → O (Observe) → R (Reason) → G (Gate) → E (Emit)
 
 **P0 (non-negotiable):** reasoning-only (no tools, no mutations); frame first
@@ -307,7 +336,7 @@ Cycle: F (Frame) → O (Observe) → R (Reason) → G (Gate) → E (Emit)
 evidence-anchored claims (H/M/L tiers); bounded deliberation (≤3 passes +
 1 REFORGE); reversal conditions mandatory.
 
-See \`${TARGET}/AGENTS.md\` for full rules and the phase pipeline."
+See \`${TARGET}/SPEC.md\` for full rules and the phase pipeline."
 
 # ──────────────────────────────────────────────────────────
 # Host detection and dispatch file writing
@@ -353,8 +382,8 @@ Execute the FORGE cycle (Frame → Observe → Reason → Gate → Emit). You ar
 **reasoning-only**: no tool calls, no file mutations, no exploration. If
 asked to plan, implement, or scout, hand off.
 
-Full rules: \`${TARGET}/AGENTS.md\`. Always-loaded profile: \`${TARGET}/agent.md\`.
-Skills under \`${TARGET}/skills/<phase>/SKILL.md\` — load only the active phase."
+Full spec: \`${TARGET}/SPEC.md\`. Always-loaded profile: \`${TARGET}/agent.md\`.
+Skills under \`${TARGET}/skills/<phase>.md\` — load only the active phase."
         write_per_host_dispatch ".claude/agents/${EIDOLON_NAME}.md" "$CLAUDE_AGENT"
         if [[ "$SHARED_DISPATCH" == "true" ]]; then
           upsert_eidolon_block "CLAUDE.md" "$SHARED_BLOCK" "dispatch"
@@ -373,7 +402,7 @@ applyTo: \"**\"
 description: \"FORGE — structured deliberation for hard decisions\"
 ---
 
-See \`${TARGET}/AGENTS.md\` for the full ruleset and phase pipeline.
+See \`${TARGET}/SPEC.md\` for the full ruleset and phase pipeline.
 Reasoning-only — refuses tools, planning, and implementation."
         write_per_host_dispatch ".github/instructions/${EIDOLON_NAME}.instructions.md" "$COPILOT_INSTR"
         if [[ "$SHARED_DISPATCH" == "true" ]]; then
@@ -409,7 +438,7 @@ mode: primary
 description: \"FORGE — structured deliberation for hard decisions\"
 ---
 
-See \`${TARGET}/REASONER.md\` for full rules.
+See \`${TARGET}/SPEC.md\` for full rules.
 Reasoning-only — refuses tools, planning, and implementation."
         write_per_host_dispatch ".opencode/agents/${EIDOLON_NAME}.md" "$OC_AGENT"
         echo "→ OpenCode: wired"
@@ -436,8 +465,8 @@ If the parent asks you to plan, implement, scout, or document, request a
 hand-off to the appropriate Eidolon (SPECTRA, APIVR-Δ, ATLAS, Scribe).
 
 Canonical methodology entry: \`${TARGET}/agent.md\`.
-Full ruleset: \`${TARGET}/AGENTS.md\`.
-Phase skills: \`${TARGET}/skills/<phase>/SKILL.md\` — load only the active phase."
+Full spec: \`${TARGET}/SPEC.md\`.
+Phase skills: \`${TARGET}/skills/<phase>.md\` — load only the active phase."
         write_per_host_dispatch ".codex/agents/${EIDOLON_NAME}.md" "$CODEX_AGENT"
         echo "→ Codex: wired"
         hosts_wired_arr+=("codex")
@@ -514,6 +543,54 @@ if [[ "$ECL_VERSION" != "none" ]]; then
   }"
 fi
 
+# EIIS v1.3 — spec_file field (§1.8) and skills array (§4.2.4).
+# spec_file must match pattern ^\.eidolons/[a-z][a-z0-9-]*/SPEC\.md$
+# Strip any leading "./" from TARGET so paths begin with ".eidolons/…"
+TARGET_CLEAN="${TARGET#./}"
+SPEC_FILE="${TARGET_CLEAN}/SPEC.md"
+
+# Build skills[] array with live SHA-256 values.
+sha256_val() {
+  local f="$1"
+  if [ -f "$f" ]; then
+    sha256_file "$f"
+  else
+    echo "0000000000000000000000000000000000000000000000000000000000000000"
+  fi
+}
+
+build_skills_json() {
+  local skills_json="" sep=""
+  for skill in framing deliberation verification; do
+    local src_path="${TARGET_CLEAN}/skills/${skill}.md"
+    local vendor_path=".claude/skills/${EIDOLON_SLUG}-${skill}/SKILL.md"
+    local src_sha
+    src_sha="$(sha256_val "${src_path}")"
+
+    local vendor_block=""
+    if printf '%s\n' "${HOSTS}" | grep -q 'claude-code'; then
+      local vendor_sha
+      vendor_sha="$(sha256_val "${vendor_path}")"
+      vendor_block=",
+        \"vendor_path\": \"${vendor_path}\",
+        \"vendor_sha256\": \"${vendor_sha}\""
+    fi
+
+    skills_json="${skills_json}${sep}{
+      \"name\": \"${skill}\",
+      \"source_path\": \"${src_path}\",
+      \"source_sha256\": \"${src_sha}\"${vendor_block}
+    }"
+    sep=","
+  done
+  echo "${skills_json}"
+}
+
+SKILLS_JSON=""
+if [[ "$DRY_RUN" != "true" ]]; then
+  SKILLS_JSON="$(build_skills_json)"
+fi
+
 if [[ "$DRY_RUN" != "true" ]]; then
   mkdir -p "${TARGET}"
   cat > "${TARGET}/install.manifest.json" <<EOF
@@ -523,8 +600,10 @@ if [[ "$DRY_RUN" != "true" ]]; then
   "methodology": "${METHODOLOGY}",
   "installed_at": "${INSTALLED_AT}",
   "target": "${TARGET}",
+  "spec_file": "${SPEC_FILE}",
   "hosts_wired": [${HOSTS_WIRED_JSON}],
   "files_written": [${FILES_JSON}],
+  "skills": [${SKILLS_JSON}],
   "token_budget": {
     "entry": ${AGENT_TOKENS},
     "working_set_target": 1000

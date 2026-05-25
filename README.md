@@ -9,15 +9,12 @@ When your stack can't agree, when the trade-offs aren't obvious, when the root c
 ```
 reasoner/
 ├── install.sh                  # Install into any project
-├── REASONER.md                 # Agent entry point (always loaded)
+├── SPEC.md                     # Full methodology spec (always loaded)
 ├── DESIGN-RATIONALE.md         # Research → design decision mapping
-├── skills/                     # Loaded on-demand per phase
-│   ├── framing/
-│   │   └── SKILL.md            # Problem decomposition + constraint extraction
-│   ├── deliberation/
-│   │   └── SKILL.md            # Multi-path reasoning + hypothesis scoring
-│   └── verification/
-│       └── SKILL.md            # Logic checking + confidence calibration
+├── skills/                     # Loaded on-demand per phase (flat layout)
+│   ├── framing.md              # Problem decomposition + constraint extraction
+│   ├── deliberation.md         # Multi-path reasoning + hypothesis scoring
+│   └── verification.md         # Logic checking + confidence calibration
 └── templates/                  # Decision output skeletons per type
     ├── verdict.md              # General-purpose decision output
     ├── trade-off-analysis.md   # X vs Y with decision matrix
@@ -35,27 +32,27 @@ git clone https://github.com/Rynaro/reasoner
 bash reasoner/install.sh [target-directory]
 ```
 
-Default target: `./agents/reasoner`. Then point your AI tooling at the installed `REASONER.md`:
+Default target: `./.eidolons/forge`. Then point your AI tooling at the installed `SPEC.md`:
 
 | Tooling | How to load |
 |---------|-------------|
-| **Claude Code** | `@agents/reasoner/REASONER.md` or add to `CLAUDE.md` |
+| **Claude Code** | `@.eidolons/forge/SPEC.md` or add to `CLAUDE.md` |
 | **Cursor** | Add path to `.cursorrules` or custom instructions |
 | **Windsurf** | Add path to `.windsurfrules` |
 | **GitHub Copilot** | Place in `.github/agents/` or reference from `AGENTS.md` |
 | **OpenCode** | Place in `.opencode/agents/` |
-| **Raw API / any LLM** | Load `REASONER.md` as the system prompt |
+| **Raw API / any LLM** | Load `SPEC.md` as the system prompt |
 
 ### Alternative: Git submodule
 
 ```bash
-git submodule add https://github.com/Rynaro/reasoner agents/reasoner
+git submodule add https://github.com/Rynaro/reasoner .eidolons/forge
 ```
 
 ### Alternative: Direct copy
 
 ```bash
-cp -r reasoner/ your-project/agents/reasoner/
+cp -r reasoner/ your-project/.eidolons/forge/
 ```
 
 All internal paths are relative. Works from any location.
@@ -88,7 +85,7 @@ F ──▶ O ──▶ R ──▶ G ──┬──▶ E (gates pass)
 
 ## Design Principles
 
-**Minimal entry point**: `REASONER.md` is the only file loaded at start. Skills and templates load on-demand per phase.
+**Minimal entry point**: `SPEC.md` is the only file loaded at start. Skills and templates load on-demand per phase.
 
 **Token-efficient**: Typical working set is ~2,550 tokens (entry point + one skill + one template). Leaves maximum context budget for evidence.
 

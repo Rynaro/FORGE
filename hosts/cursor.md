@@ -3,14 +3,14 @@
 ## 1. Install
 
 ```bash
-bash install.sh --target ./agents/reasoner --hosts cursor
+bash install.sh --target ./.eidolons/forge --hosts cursor
 ```
 
-The installer creates `.cursor/rules/reasoner.mdc` in your project.
+The installer creates `.cursor/rules/forge.mdc` in your project.
 
 ## 2. Config
 
-**`.cursor/rules/reasoner.mdc`:**
+**`.cursor/rules/forge.mdc`:**
 
 ```markdown
 ---
@@ -22,8 +22,8 @@ alwaysApply: false
 You are operating under the FORGE methodology. Load the full spec before
 deliberating:
 
-See agents/reasoner/agent.md for the condensed descriptor.
-See agents/reasoner/REASONER.md for the full methodology.
+See .eidolons/forge/agent.md for the condensed descriptor.
+See .eidolons/forge/SPEC.md for the full methodology.
 
 Non-negotiable (P0): reasoning-only (no tools), frame first, ≥3 hypotheses,
 adversarial self-testing, evidence-anchored claims, bounded deliberation
@@ -76,6 +76,6 @@ the rule to every request's context budget.
 The `.mdc` file summary may be too condensed. Reference the full spec
 file inline:
 ```
-@agents/reasoner/REASONER.md
+@.eidolons/forge/SPEC.md
 FORGE, [question]
 ```

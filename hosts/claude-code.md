@@ -3,10 +3,11 @@
 ## 1. Install
 
 ```bash
-bash install.sh --target ./agents/reasoner --hosts claude-code
+bash install.sh --target ./.eidolons/forge --hosts claude-code
 ```
 
-The installer appends `@agents/reasoner/REASONER.md` to your project's `CLAUDE.md`.
+The installer writes `SPEC.md` and wires `.claude/agents/forge.md` and
+`.claude/skills/forge-<phase>/SKILL.md` in your project.
 
 ## 2. Config
 
@@ -14,7 +15,7 @@ The installer appends `@agents/reasoner/REASONER.md` to your project's `CLAUDE.m
 
 ```markdown
 # CLAUDE.md
-@agents/reasoner/REASONER.md
+@.eidolons/forge/SPEC.md
 ```
 
 This loads the Reasoner spec into every Claude Code session in the project.
@@ -24,7 +25,7 @@ Use this when FORGE deliberation is a frequent operation.
 
 ```bash
 mkdir -p .claude/agents
-ln -sf ../../agents/reasoner/agent.md .claude/agents/reasoner.md
+ln -sf ../../.eidolons/forge/agent.md .claude/agents/reasoner.md
 ```
 
 Claude Code will discover `reasoner` as an available sub-agent but only load
@@ -33,7 +34,7 @@ it when invoked. This preserves context budget.
 **Option C — Direct reference per session:**
 
 ```
-@agents/reasoner/REASONER.md
+@.eidolons/forge/SPEC.md
 
 FORGE, help me decide: [question]
 ```
@@ -45,7 +46,7 @@ FORGE, help me decide: [specific, bounded question]
 
 Reasoner, evaluate this trade-off: [context + constraints]
 
-@REASONER.md
+@SPEC.md
 FORGE, arbitrate: SPECTRA recommends X, APIVR-Δ flagged Y as problematic.
 ```
 
@@ -67,18 +68,18 @@ with confidence score and reversal conditions.
 ## 5. Troubleshooting
 
 **"The agent doesn't follow FORGE cycle steps"**  
-Ensure `REASONER.md` is being loaded (not just `agent.md`). The full cycle
-spec is in `REASONER.md`. `agent.md` is a condensed descriptor for sub-agent
-registration — it references `REASONER.md` explicitly.
+Ensure `SPEC.md` is being loaded (not just `agent.md`). The full cycle
+spec is in `SPEC.md`. `agent.md` is a condensed descriptor for sub-agent
+registration — it references `SPEC.md` explicitly.
 
 **"The Reasoner is reading files / calling tools"**  
 P0 Rule 1 prohibits tool use. If the model is bypassing this, the CLAUDE.md
-or sub-agent file may not be loaded correctly. Verify with `@agents/reasoner/agent.md` 
+or sub-agent file may not be loaded correctly. Verify with `@.eidolons/forge/agent.md`
 inline before the prompt.
 
 **"Only getting 2 hypotheses"**  
-P0 Rule 3 requires ≥3. If consistently getting 2, the `skills/deliberation/SKILL.md`
+P0 Rule 3 requires ≥3. If consistently getting 2, the `skills/deliberation.md`
 skill may not be loaded. During the Reason phase, load it explicitly:
 ```
-@agents/reasoner/skills/deliberation/SKILL.md
+@.eidolons/forge/skills/deliberation.md
 ```

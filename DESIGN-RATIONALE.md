@@ -153,13 +153,13 @@ Both sets are defensible; the chosen set is more differentiated phase-to-phase a
 
 | Component | Estimated Tokens | When Loaded |
 |-----------|-----------------|-------------|
-| REASONER.md (entry point) | ~1,150 | Always when Reasoner active |
-| skills/framing/SKILL.md | ~920 | Frame phase |
-| skills/deliberation/SKILL.md | ~1,100 | Reason phase |
-| skills/verification/SKILL.md | ~950 | Gate phase |
+| SPEC.md (entry point) | ~1,150 | Always when Reasoner active |
+| skills/framing.md | ~920 | Frame phase |
+| skills/deliberation.md | ~1,100 | Reason phase |
+| skills/verification.md | ~950 | Gate phase |
 | Template (largest: verdict) | ~480 | Per decision type |
 
-**Typical working set**: REASONER.md + one skill + one template ≈ **2,550 tokens**
+**Typical working set**: SPEC.md + one skill + one template ≈ **2,550 tokens**
 
 This is consistent with the stack's design envelope:
 - Scribe: ~2,200 tokens working set

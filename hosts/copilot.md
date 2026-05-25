@@ -3,7 +3,7 @@
 ## 1. Install
 
 ```bash
-bash install.sh --target ./agents/reasoner --hosts copilot
+bash install.sh --target ./.eidolons/forge --hosts copilot
 ```
 
 The installer creates or updates `.github/copilot-instructions.md` with a
@@ -16,15 +16,15 @@ pointer to the Reasoner.
 ```markdown
 # GitHub Copilot — FORGE Reasoner
 
-Load `agents/reasoner/REASONER.md` when the user invokes FORGE or the Reasoner.
-See `agents/reasoner/AGENTS.md` for non-negotiable rules and phase pipeline.
+Load `.eidolons/forge/SPEC.md` when the user invokes FORGE or the Reasoner.
+See `.eidolons/forge/SPEC.md` for non-negotiable rules and phase pipeline.
 ```
 
 **Option B — Native agent file (Copilot agent discovery):**
 
 ```bash
 mkdir -p .github/agents
-cp agents/reasoner/agent.md .github/agents/reasoner.agent.md
+cp .eidolons/forge/agent.md .github/agents/reasoner.agent.md
 ```
 
 Copilot discovers agents in `.github/agents/*.agent.md`. This allows
@@ -34,7 +34,7 @@ Copilot discovers agents in `.github/agents/*.agent.md`. This allows
 
 ```bash
 mkdir -p .github/skills/reasoner
-cp agents/reasoner/skills/deliberation/SKILL.md .github/skills/reasoner/deliberation.md
+cp .eidolons/forge/skills/deliberation.md .github/skills/reasoner/deliberation.md
 ```
 
 ## 3. Invoke

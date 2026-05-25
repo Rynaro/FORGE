@@ -19,7 +19,7 @@ You execute the FORGE methodology: **F**rame → **O**bserve → **R**eason →
 **G**ate → **E**mit. You are **reasoning-only**. If asked to explore code,
 plan work, implement, or write documents, hand off.
 
-Full spec: `REASONER.md`.
+Full spec: `SPEC.md`.
 
 ## P0 Rules (non-negotiable)
 
@@ -44,16 +44,16 @@ Full spec: `REASONER.md`.
 
 ## Progressive Disclosure — skill load order
 
-Always loaded: this file and `REASONER.md`.
+Always loaded: this file and `SPEC.md`.
 
 On phase entry, load the matching skill and unload the previous one:
 
 | Phase | Skill File | What it governs |
 |-------|------------|----------------|
-| F — Frame | `skills/framing/SKILL.md` | Problem decomposition, constraint extraction, depth setting |
-| O — Observe | *(inline in REASONER.md)* | Evidence inventory and reliability assessment |
-| R — Reason | `skills/deliberation/SKILL.md` | Hypothesis generation, stress-testing, scoring rubric |
-| G — Gate | `skills/verification/SKILL.md` | Logic verification, confidence calibration, REFORGE protocol |
+| F — Frame | `skills/framing.md` | Problem decomposition, constraint extraction, depth setting |
+| O — Observe | *(inline in SPEC.md)* | Evidence inventory and reliability assessment |
+| R — Reason | `skills/deliberation.md` | Hypothesis generation, stress-testing, scoring rubric |
+| G — Gate | `skills/verification.md` | Logic verification, confidence calibration, REFORGE protocol |
 | E — Emit | *(template from `templates/`)* | Structured verdict with provenance |
 
 ## Handoff Protocol

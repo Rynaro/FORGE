@@ -11,13 +11,13 @@ detection and wiring automatically.
 bash /path/to/forge/install.sh
 
 # Or specify a custom target directory:
-bash /path/to/forge/install.sh --target ./agents/reasoner
+bash /path/to/forge/install.sh --target ./.eidolons/forge
 
 # Dry-run to preview changes without writing:
 bash /path/to/forge/install.sh --dry-run
 ```
 
-Default install target: `./agents/reasoner`
+Default install target: `./.eidolons/forge`
 
 ## Host wiring
 
@@ -26,20 +26,20 @@ Default install target: `./agents/reasoner`
 After install, add the Reasoner to your project's `CLAUDE.md`:
 
 ```
-@agents/reasoner/REASONER.md
+@.eidolons/forge/SPEC.md
 ```
 
 Or register as a sub-agent (Claude Code ≥ 1.x):
 
 ```bash
 mkdir -p .claude/agents
-ln -sf ../../agents/reasoner/agent.md .claude/agents/reasoner.md
+ln -sf ../../.eidolons/forge/agent.md .claude/agents/reasoner.md
 ```
 
 Then invoke:
 
 ```
-@REASONER.md
+@SPEC.md
 
 FORGE, help me decide: [your question]
 ```
@@ -48,13 +48,13 @@ FORGE, help me decide: [your question]
 
 1. Copy the Reasoner into your project: `bash install.sh --hosts copilot`
 2. The installer creates or updates `.github/copilot-instructions.md` with
-   a pointer to `agents/reasoner/AGENTS.md`.
-3. Alternatively, place `agents/reasoner/agent.md` in `.github/agents/` for
+   a pointer to `.eidolons/forge/SPEC.md`.
+3. Alternatively, place `.eidolons/forge/agent.md` in `.github/agents/` for
    Copilot's native agent discovery:
 
 ```bash
 mkdir -p .github/agents
-cp agents/reasoner/agent.md .github/agents/reasoner.agent.md
+cp .eidolons/forge/agent.md .github/agents/reasoner.agent.md
 ```
 
 ### Cursor
@@ -69,12 +69,12 @@ globs: "**/*"
 alwaysApply: false
 ---
 
-See agents/reasoner/agent.md for the full specification.
+See .eidolons/forge/agent.md for the full specification.
 ```
 
 ### OpenCode
 
-1. Run `bash install.sh --hosts opencode` — creates `.opencode/agents/reasoner.md`
+1. Run `bash install.sh --hosts opencode` — creates `.opencode/agents/forge.md`
 2. Or create manually:
 
 ```markdown
@@ -83,12 +83,12 @@ mode: primary
 description: Reasoner — structured deliberation for hard decisions (FORGE)
 ---
 
-See agents/reasoner/REASONER.md for full rules.
+See .eidolons/forge/SPEC.md for full rules.
 ```
 
 ### Raw API / any LLM
 
-Load `REASONER.md` as the system prompt. No other files required for
+Load `SPEC.md` as the system prompt. No other files required for
 basic deliberation. Load skills and templates on demand per phase.
 
 ## Verify the install
@@ -115,7 +115,7 @@ missing success criteria).
 To upgrade to a newer version:
 
 ```bash
-bash /path/to/new-forge/install.sh --target ./agents/reasoner --force
+bash /path/to/new-forge/install.sh --target ./.eidolons/forge --force
 ```
 
 The `--force` flag skips the version-compare prompt. The installer
@@ -126,9 +126,9 @@ updates all files and writes a new `install.manifest.json`.
 Remove the installed directory and any dispatch file entries:
 
 ```bash
-rm -rf ./agents/reasoner
-# Then remove the @agents/reasoner/REASONER.md line from CLAUDE.md,
-# .cursor/rules/reasoner.mdc, etc.
+rm -rf ./.eidolons/forge
+# Then remove the @.eidolons/forge/SPEC.md line from CLAUDE.md,
+# .cursor/rules/forge.mdc, etc.
 ```
 
 ## Non-interactive / meta-installer mode
@@ -137,7 +137,7 @@ For use inside a meta-installer script (e.g., `eidolons-init`):
 
 ```bash
 bash install.sh \
-  --target ./agents/reasoner \
+  --target ./.eidolons/forge \
   --hosts all \
   --non-interactive \
   --force
