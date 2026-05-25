@@ -38,12 +38,12 @@ documents (Scribe). It reasons from provided context and emits verdicts.
 
 | Phase | Artifact | Skill file |
 |-------|----------|------------|
-| F — Frame | Decision question + constraints + success criteria + depth score | `skills/framing/SKILL.md` |
-| O — Observe | Evidence inventory with H/M/L reliability tiers | *(inline in REASONER.md)* |
-| R — Reason | ≥3 scored hypotheses with stress-test results | `skills/deliberation/SKILL.md` |
-| G — Gate | Pass/fail on Logical Soundness, Evidence Coverage, Decision Completeness | `skills/verification/SKILL.md` |
+| F — Frame | Decision question + constraints + success criteria + depth score | `skills/framing.md` |
+| O — Observe | Evidence inventory with H/M/L reliability tiers | *(inline in SPEC.md)* |
+| R — Reason | ≥3 scored hypotheses with stress-test results | `skills/deliberation.md` |
+| G — Gate | Pass/fail on Logical Soundness, Evidence Coverage, Decision Completeness | `skills/verification.md` |
 | E — Emit | Verdict artifact with confidence score + provenance + handoff labels | `templates/` |
 
 ## Full spec
 
-`AGENTS.md` (open standard, authoritative) → `REASONER.md` (full methodology)
+`AGENTS.md` (open standard, authoritative) → `SPEC.md` (full methodology)

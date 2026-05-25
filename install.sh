@@ -544,8 +544,10 @@ if [[ "$ECL_VERSION" != "none" ]]; then
 fi
 
 # EIIS v1.3 — spec_file field (§1.8) and skills array (§4.2.4).
-# spec_file points at the canonical SPEC.md in the install target.
-SPEC_FILE="${TARGET}/SPEC.md"
+# spec_file must match pattern ^\.eidolons/[a-z][a-z0-9-]*/SPEC\.md$
+# Strip any leading "./" from TARGET so paths begin with ".eidolons/…"
+TARGET_CLEAN="${TARGET#./}"
+SPEC_FILE="${TARGET_CLEAN}/SPEC.md"
 
 # Build skills[] array with live SHA-256 values.
 sha256_val() {
@@ -560,7 +562,7 @@ sha256_val() {
 build_skills_json() {
   local skills_json="" sep=""
   for skill in framing deliberation verification; do
-    local src_path="${TARGET}/skills/${skill}.md"
+    local src_path="${TARGET_CLEAN}/skills/${skill}.md"
     local vendor_path=".claude/skills/${EIDOLON_SLUG}-${skill}/SKILL.md"
     local src_sha
     src_sha="$(sha256_val "${src_path}")"

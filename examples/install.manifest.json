@@ -4,7 +4,7 @@
   "methodology": "FORGE",
   "installed_at": "2026-05-25T00:00:00Z",
   "target": "./.eidolons/forge",
-  "spec_file": "./.eidolons/forge/SPEC.md",
+  "spec_file": ".eidolons/forge/SPEC.md",
   "hosts_wired": [
     "claude-code",
     "copilot",
@@ -14,43 +14,43 @@
   ],
   "files_written": [
     {
-      "path": "./.eidolons/forge/SPEC.md",
+      "path": ".eidolons/forge/SPEC.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "spec",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/SKILL.md",
+      "path": ".eidolons/forge/SKILL.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "skill",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/agent.md",
+      "path": ".eidolons/forge/agent.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "entry-point",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/CLAUDE.md",
+      "path": ".eidolons/forge/CLAUDE.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "entry-point",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/DESIGN-RATIONALE.md",
+      "path": ".eidolons/forge/DESIGN-RATIONALE.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "other",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/README.md",
+      "path": ".eidolons/forge/README.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "other",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/skills/framing.md",
+      "path": ".eidolons/forge/skills/framing.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "skill",
       "mode": "created"
@@ -62,7 +62,7 @@
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/skills/deliberation.md",
+      "path": ".eidolons/forge/skills/deliberation.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "skill",
       "mode": "created"
@@ -74,7 +74,7 @@
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/skills/verification.md",
+      "path": ".eidolons/forge/skills/verification.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "skill",
       "mode": "created"
@@ -86,31 +86,31 @@
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/templates/verdict.md",
+      "path": ".eidolons/forge/templates/verdict.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "template",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/templates/trade-off-analysis.md",
+      "path": ".eidolons/forge/templates/trade-off-analysis.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "template",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/templates/feasibility-assessment.md",
+      "path": ".eidolons/forge/templates/feasibility-assessment.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "template",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/templates/root-cause-analysis.md",
+      "path": ".eidolons/forge/templates/root-cause-analysis.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "template",
       "mode": "created"
     },
     {
-      "path": "./.eidolons/forge/templates/conflict-resolution.md",
+      "path": ".eidolons/forge/templates/conflict-resolution.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "template",
       "mode": "created"
@@ -167,21 +167,21 @@
   "skills": [
     {
       "name": "framing",
-      "source_path": "./.eidolons/forge/skills/framing.md",
+      "source_path": ".eidolons/forge/skills/framing.md",
       "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "vendor_path": ".claude/skills/forge-framing/SKILL.md",
       "vendor_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
       "name": "deliberation",
-      "source_path": "./.eidolons/forge/skills/deliberation.md",
+      "source_path": ".eidolons/forge/skills/deliberation.md",
       "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "vendor_path": ".claude/skills/forge-deliberation/SKILL.md",
       "vendor_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
       "name": "verification",
-      "source_path": "./.eidolons/forge/skills/verification.md",
+      "source_path": ".eidolons/forge/skills/verification.md",
       "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "vendor_path": ".claude/skills/forge-verification/SKILL.md",
       "vendor_sha256": "0000000000000000000000000000000000000000000000000000000000000000"

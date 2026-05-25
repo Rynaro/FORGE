@@ -20,10 +20,10 @@ Use the Reasoner when someone needs a *decision*, not a plan, not code, not a do
 
 | Need | Load |
 |------|------|
-| Full deliberation architecture | `REASONER.md` |
-| Problem decomposition | `skills/framing/SKILL.md` |
-| Multi-path reasoning + scoring | `skills/deliberation/SKILL.md` |
-| Logic verification + confidence | `skills/verification/SKILL.md` |
+| Full deliberation architecture | `SPEC.md` |
+| Problem decomposition | `skills/framing.md` |
+| Multi-path reasoning + scoring | `skills/deliberation.md` |
+| Logic verification + confidence | `skills/verification.md` |
 | Decision output templates | `templates/` |
 | Research → design mapping | `DESIGN-RATIONALE.md` |
 
