@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.4.0] — 2026-05-25 — EIIS v1.3 install-layout normalization
+
+### Changed
+- BREAKING: full-spec destination renamed `REASONER.md` → `SPEC.md` (EIIS v1.3 §1.8).
+  Source repo file also renamed via `git mv REASONER.md SPEC.md`.
+- BREAKING: default `--target` changed from `./agents/reasoner` to `./.eidolons/forge`
+  (aligns with nexus `roster/index.yaml` `target_default`; override still works).
+- BREAKING: `AGENTS.md` is no longer copied into the install target.
+  The source repo retains `AGENTS.md` for EIIS §1.1 vendor-neutral conformance,
+  but the install target no longer contains a copy. Nexus agent file's
+  `Full rules` reference is replaced by `Full spec: SPEC.md`. Resolves the
+  long-standing dead-reference bug (GAP-1).
+- Skills layout flattened: `skills/<phase>/SKILL.md` → `skills/<phase>.md`
+  (source-of-truth per EIIS v1.3 §4.2.4.3).
+- Shared dispatch block and all per-host HEREDOCs updated:
+  `REASONER.md` → `SPEC.md`; `AGENTS.md` → `SPEC.md`; skill paths flattened.
+
+### Added
+- Skills now dual-written to `.claude/skills/forge-<phase>/SKILL.md` for
+  Claude Code auto-load (EIIS v1.3 §4.2.4). `wire_skill` helper added to
+  `install.sh`. FORGE previously had no `.claude/skills/` wiring (GAP-4).
+- Manifest: `spec_file` field (§1.8) and `skills[]` array (§4.2.4) with
+  live SHA-256 for source-of-truth and vendor-copy paths per skill.
+
+### Compliance
+- `EIIS_VERSION` bumped `1.1` → `1.3`.
+- `EIDOLON_VERSION` bumped `1.3.2` → `1.4.0`.
+
 ## [1.3.2] — 2026-05-13 — declare ECL v2.0 conformance
 
 ### Changed
