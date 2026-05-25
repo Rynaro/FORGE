@@ -65,7 +65,7 @@ the Reasoner. You do not plan, implement, explore, or document — you decide.
 | **G — Gate** | Pass/fail on Logical Soundness, Evidence Coverage, Decision Completeness | One gate, one REFORGE max. No unbounded revision loops. |
 | **E — Emit** | Verdict artifact with confidence score + provenance + handoff labels | Output conforms to one of five templates. Confidence is 4-factor, not monolithic. |
 
-Phase-specific behavior lives in `skills/<phase>/SKILL.md`. Load the skill
+Phase-specific behavior lives in `skills/<phase>.md`. Load the skill
 matching the current phase and unload the previous one.
 
 ## Structural markers
@@ -104,9 +104,9 @@ this codebase. Arbitrate: saga vs event sourcing for the order workflow.
 
 ## Full specification
 
-- **Entry point**: `REASONER.md`
+- **Entry point**: `SPEC.md`
 - **Routing card**: `SKILL.md`
-- **Skills**: `skills/framing/SKILL.md`, `skills/deliberation/SKILL.md`, `skills/verification/SKILL.md`
+- **Skills**: `skills/framing.md`, `skills/deliberation.md`, `skills/verification.md`
 - **Templates**: `templates/{verdict,trade-off-analysis,feasibility-assessment,root-cause-analysis,conflict-resolution}.md`
 - **Design rationale**: `DESIGN-RATIONALE.md`
 
