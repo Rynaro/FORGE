@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ──────────────────────────────────────────────────────────
-# Reasoner v1.4.1 — Install Script (EIIS-1.3 conformant)
+# Reasoner v1.5.0 — Install Script (EIIS-1.4 conformant)
 #
 # Installs the Reasoner deliberation agent into any project.
 # Usage: bash install.sh [OPTIONS]
@@ -11,14 +11,29 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
 EIDOLON_SLUG="forge"
-EIDOLON_VERSION="1.4.1"
+EIDOLON_VERSION="1.5.0"
 METHODOLOGY="FORGE"
 
-# Legacy artefacts swept by cleanup_legacy_v1_2 (Strategy A — §2, spec 2026-05-26).
-# REASONER.md: pre-normalization full-spec filename (renamed → SPEC.md in v1.4.0).
-# AGENTS.md:   dead install-target copy retired in v1.4.0; source repo retains it
-#              for EIIS §1.1 conformance, but the target copy is now stale noise.
-LEGACY_SPEC_FILES=( "REASONER.md" "AGENTS.md" )
+# Legacy artefacts swept by cleanup_legacy_v1_2 (belt-and-braces early sweep,
+# per EIIS v1.4 §6.X.5 MAY). Runs BEFORE new content is written so the
+# manifest-driven canonical_inventory_sweep (below) sees a clean slate.
+#
+# v1.3.1 legacy:
+#   REASONER.md: pre-normalization full-spec filename (renamed → SPEC.md in v1.4.0).
+#   AGENTS.md:   dead install-target copy retired in v1.4.0; source repo retains it.
+# v1.4 (canonical-inventory) additions:
+#   SKILL.md:            Codex dispatch file — never belongs in install target.
+#   CLAUDE.md:           Entry-point for host dispatch, not an install-target file.
+#   README.md:           Source-repo documentation — not an install-target file.
+#   DESIGN-RATIONALE.md: Source-repo documentation — not an install-target file.
+LEGACY_SPEC_FILES=( \
+  "REASONER.md" \
+  "AGENTS.md" \
+  "SKILL.md" \
+  "CLAUDE.md" \
+  "README.md" \
+  "DESIGN-RATIONALE.md" \
+)
 LEGACY_SKILL_DIRS=( \
   "deliberation" \
   "framing" \
@@ -61,6 +76,81 @@ cleanup_legacy_v1_2() {
       echo "[info] swept legacy skill subdir: ${target}/skills/${legacy_skill_dir}" >&2
     fi
   done
+
+  return 0
+}
+
+# canonical_inventory_sweep <target>
+#
+# EIIS v1.4 §6.X normative sweep: after all writes, remove any file under
+# <target> that is NOT in the FILES_WRITTEN array (the §1.7 whitelist-by-
+# construction guarantee). Then prune empty directories.
+#
+# Called once, after all copy_tracked / wire_skill / record_file calls and
+# BEFORE the manifest is written — the manifest is added separately.
+#
+# Bash 3.2 compatible: no associative arrays; uses a newline-delimited
+# allow-list of absolute canonical paths and a POSIX while-read loop.
+canonical_inventory_sweep() {
+  local target="$1"
+
+  if [ -z "${target}" ] || [ ! -d "${target}" ]; then
+    return 0
+  fi
+
+  # Resolve target to an absolute, canonical path (bash 3.2: use cd/pwd).
+  local abs_target
+  abs_target="$(cd "${target}" && pwd)"
+
+  # Build the allow-set from FILES_WRITTEN as absolute paths.
+  # Each entry in FILES_WRITTEN is a JSON object literal like:
+  #   {"path":"<p>","sha256":"...","role":"...","mode":"..."}
+  # Extract the path value by stripping prefix through the first '"path":"' and
+  # then taking everything up to the next '"'.  Bash 3.2 compatible.
+  local allow_list=""
+  local fw_entry fw_path abs_fw
+  for fw_entry in "${FILES_WRITTEN[@]}"; do
+    # Strip up to and including '"path":"'.
+    fw_path="${fw_entry#*\"path\":\"}"
+    # Strip from the closing '"' onward.
+    fw_path="${fw_path%%\"*}"
+    # Resolve to absolute path.
+    if [ -n "$fw_path" ]; then
+      case "$fw_path" in
+        /*) abs_fw="$fw_path" ;;                    # already absolute
+        *)  abs_fw="$(pwd)/${fw_path#./}" ;;        # relative to cwd
+      esac
+      allow_list="${allow_list}${abs_fw}
+"
+    fi
+  done
+
+  # Always allow install.manifest.json in the target (written AFTER this sweep).
+  allow_list="${allow_list}${abs_target}/install.manifest.json
+"
+
+  # Walk every file under the target and remove anything not in the allow-set.
+  local file
+  find "${abs_target}" -type f | while IFS= read -r file; do
+    local found=0
+    local al_line
+    while IFS= read -r al_line; do
+      [ -z "${al_line}" ] && continue
+      if [ "${file}" = "${al_line}" ]; then
+        found=1
+        break
+      fi
+    done <<EOF_AL
+${allow_list}
+EOF_AL
+    if [ "${found}" -eq 0 ]; then
+      rm -f "${file}"
+      echo "[info] canonical_inventory_sweep: removed ${file}" >&2
+    fi
+  done
+
+  # Prune empty directories left behind after removals.
+  find "${abs_target}" -type d -empty -delete 2>/dev/null || true
 
   return 0
 }
@@ -192,6 +282,7 @@ record_file() {
 echo "╔══════════════════════════════════════════╗"
 echo "║  Reasoner v${EIDOLON_VERSION} — Install               ║"
 echo "╚══════════════════════════════════════════╝"
+
 echo ""
 
 # --- idempotency check ---
@@ -212,12 +303,11 @@ fi
 if [[ "$MANIFEST_ONLY" != "true" ]]; then
   if [[ "$DRY_RUN" == "true" ]]; then
     echo "[dry-run] Would create: ${TARGET}/"
-    echo "[dry-run] Would copy: SPEC.md, SKILL.md, agent.md, CLAUDE.md, DESIGN-RATIONALE.md, README.md"
+    echo "[dry-run] Would copy: SPEC.md, agent.md, ECL_VERSION"
     echo "[dry-run] Would copy: skills/framing.md, skills/deliberation.md, skills/verification.md"
     echo "[dry-run] Would wire skills to .claude/skills/forge-<phase>/SKILL.md"
     echo "[dry-run] Would copy: templates/verdict.md, trade-off-analysis.md, feasibility-assessment.md, root-cause-analysis.md, conflict-resolution.md"
-    echo "[dry-run] Would copy: templates/reasoning-report.envelope.json"
-    echo "[dry-run] Would copy: schemas/reasoning-report-profile.v1.json, schemas/ecl-envelope.v1.json"
+    echo "[dry-run] Would copy: schemas/reasoning-report-profile.v1.json, schemas/ecl-envelope.v1.json, schemas/reasoning-report.envelope.json"
     echo ""
   else
     # Create target directory
@@ -267,29 +357,39 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     }
 
     # Copy core files
-    copy_tracked "SPEC.md"              "$TARGET/SPEC.md"              "spec"
-    copy_tracked "SKILL.md"             "$TARGET/SKILL.md"             "skill"
-    copy_tracked "agent.md"             "$TARGET/agent.md"             "entry-point"
-    copy_tracked "CLAUDE.md"            "$TARGET/CLAUDE.md"            "entry-point"
-    copy_tracked "DESIGN-RATIONALE.md"  "$TARGET/DESIGN-RATIONALE.md"  "other"
-    copy_tracked "README.md"            "$TARGET/README.md"            "other"
+    # EIIS v1.4 D1: agent.md (role: agent-profile) + SPEC.md (role: spec) MUST both be present.
+    # EIIS v1.4 D3: ECL_VERSION MUST be copied when source declares it.
+    # Dropped (v1.5.0): SKILL.md (Codex dispatch — host-vendor only, not install target),
+    #   CLAUDE.md, README.md, DESIGN-RATIONALE.md (source-repo docs, not install-target).
+    copy_tracked "SPEC.md"    "$TARGET/SPEC.md"    "spec"
+    copy_tracked "agent.md"   "$TARGET/agent.md"   "agent-profile"
+    copy_tracked "ECL_VERSION" "$TARGET/ECL_VERSION" "ecl-version"
 
     # Copy skills (dual-write: source-of-truth + .claude/skills/ vendor copy)
     wire_skill "framing"
     wire_skill "deliberation"
     wire_skill "verification"
 
-    # Copy templates
+    # Copy templates (all must be *.md per EIIS v1.4 §1.7 whitelist).
+    # Note: reasoning-report.envelope.json was in templates/ before v1.5.0;
+    # it has been moved to schemas/ (see schemas block below).
     copy_tracked "templates/verdict.md"                 "$TARGET/templates/verdict.md"                "template"
     copy_tracked "templates/trade-off-analysis.md"      "$TARGET/templates/trade-off-analysis.md"     "template"
     copy_tracked "templates/feasibility-assessment.md"  "$TARGET/templates/feasibility-assessment.md" "template"
     copy_tracked "templates/root-cause-analysis.md"     "$TARGET/templates/root-cause-analysis.md"    "template"
     copy_tracked "templates/conflict-resolution.md"     "$TARGET/templates/conflict-resolution.md"    "template"
-    copy_tracked "templates/reasoning-report.envelope.json"  "$TARGET/templates/reasoning-report.envelope.json"  "template"
 
-    # Copy ECL schemas (v1.3.0+)
-    copy_tracked "schemas/reasoning-report-profile.v1.json"  "$TARGET/schemas/reasoning-report-profile.v1.json"  "schema"
-    copy_tracked "schemas/ecl-envelope.v1.json"              "$TARGET/schemas/ecl-envelope.v1.json"              "schema"
+    # Copy ECL schemas (v1.3.0+). reasoning-report.envelope.json moved here
+    # from templates/ in v1.5.0 — EIIS v1.4 §1.7 whitelist allows schemas/*.json.
+    copy_tracked "schemas/install.manifest.v1.json"          "$TARGET/schemas/install.manifest.v1.json"          "other"
+    copy_tracked "schemas/reasoning-report-profile.v1.json"  "$TARGET/schemas/reasoning-report-profile.v1.json"  "other"
+    copy_tracked "schemas/ecl-envelope.v1.json"              "$TARGET/schemas/ecl-envelope.v1.json"              "other"
+    copy_tracked "schemas/reasoning-report.envelope.json"    "$TARGET/schemas/reasoning-report.envelope.json"    "other"
+
+    # EIIS v1.4 §6.X: manifest-driven canonical-inventory sweep.
+    # Runs AFTER all writes but BEFORE the manifest is written.
+    # Removes any file under TARGET that was not recorded in FILES_WRITTEN.
+    canonical_inventory_sweep "${TARGET}"
 
     echo "✓ Core files installed to $TARGET"
     echo ""
@@ -420,6 +520,9 @@ wire_host() {
         echo "[dry-run] Would write .claude/agents/${EIDOLON_NAME}.md"
         [[ "$SHARED_DISPATCH" == "true" ]] && echo "[dry-run] Would upsert eidolon:${EIDOLON_NAME} block in CLAUDE.md"
       else
+        # EIIS v1.4 §4.2.6 canonical template:
+        # MUST reference both agent.md (P0) and SPEC.md (deep spec).
+        # MUST NOT reference REASONER.md, AGENTS.md, or any legacy install-target filename.
         local CLAUDE_AGENT="---
 name: ${EIDOLON_NAME}
 description: Reasoner — structured deliberation for hard decisions via the FORGE cycle (Frame → Observe → Reason → Gate → Emit). Reasoning-only; refuses tools, exploration, and implementation.
@@ -432,12 +535,12 @@ handoffs: [spectra, apivr, atlas, scribe]
 
 # FORGE — Reasoner subagent
 
-Execute the FORGE cycle (Frame → Observe → Reason → Gate → Emit). You are
-**reasoning-only**: no tool calls, no file mutations, no exploration. If
-asked to plan, implement, or scout, hand off.
+You are FORGE. Read these two files in order at session start:
 
-Full spec: \`${TARGET}/SPEC.md\`. Always-loaded profile: \`${TARGET}/agent.md\`.
-Skills under \`${TARGET}/skills/<phase>.md\` — load only the active phase."
+1. \`./.eidolons/${EIDOLON_SLUG}/agent.md\` — always-loaded P0 rules.
+2. \`./.eidolons/${EIDOLON_SLUG}/SPEC.md\` — deep on-demand methodology spec.
+
+Skills live at \`./.eidolons/${EIDOLON_SLUG}/skills/<skill>.md\` (load on demand)."
         write_per_host_dispatch ".claude/agents/${EIDOLON_NAME}.md" "$CLAUDE_AGENT"
         if [[ "$SHARED_DISPATCH" == "true" ]]; then
           upsert_eidolon_block "CLAUDE.md" "$SHARED_BLOCK" "dispatch"
@@ -597,7 +700,7 @@ if [[ "$ECL_VERSION" != "none" ]]; then
   }"
 fi
 
-# EIIS v1.3 — spec_file field (§1.8) and skills array (§4.2.4).
+# EIIS v1.4 — spec_file field (§1.8) and skills array (§4.2.4).
 # spec_file must match pattern ^\.eidolons/[a-z][a-z0-9-]*/SPEC\.md$
 # Strip any leading "./" from TARGET so paths begin with ".eidolons/…"
 TARGET_CLEAN="${TARGET#./}"
@@ -655,6 +758,7 @@ if [[ "$DRY_RUN" != "true" ]]; then
   "installed_at": "${INSTALLED_AT}",
   "target": "${TARGET}",
   "spec_file": "${SPEC_FILE}",
+  "canonical_inventory_strict": true,
   "hosts_wired": [${HOSTS_WIRED_JSON}],
   "files_written": [${FILES_JSON}],
   "skills": [${SKILLS_JSON}],
