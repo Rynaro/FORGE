@@ -1,10 +1,11 @@
 {
   "eidolon": "forge",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "methodology": "FORGE",
-  "installed_at": "2026-05-25T00:00:00Z",
+  "installed_at": "2026-05-26T00:00:00Z",
   "target": "./.eidolons/forge",
   "spec_file": ".eidolons/forge/SPEC.md",
+  "canonical_inventory_strict": true,
   "hosts_wired": [
     "claude-code",
     "copilot",
@@ -20,33 +21,15 @@
       "mode": "created"
     },
     {
-      "path": ".eidolons/forge/SKILL.md",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "role": "skill",
-      "mode": "created"
-    },
-    {
       "path": ".eidolons/forge/agent.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "role": "entry-point",
+      "role": "agent-profile",
       "mode": "created"
     },
     {
-      "path": ".eidolons/forge/CLAUDE.md",
+      "path": ".eidolons/forge/ECL_VERSION",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "role": "entry-point",
-      "mode": "created"
-    },
-    {
-      "path": ".eidolons/forge/DESIGN-RATIONALE.md",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "role": "other",
-      "mode": "created"
-    },
-    {
-      "path": ".eidolons/forge/README.md",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "role": "other",
+      "role": "ecl-version",
       "mode": "created"
     },
     {
@@ -113,6 +96,30 @@
       "path": ".eidolons/forge/templates/conflict-resolution.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "template",
+      "mode": "created"
+    },
+    {
+      "path": ".eidolons/forge/schemas/install.manifest.v1.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "role": "other",
+      "mode": "created"
+    },
+    {
+      "path": ".eidolons/forge/schemas/reasoning-report-profile.v1.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "role": "other",
+      "mode": "created"
+    },
+    {
+      "path": ".eidolons/forge/schemas/ecl-envelope.v1.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "role": "other",
+      "mode": "created"
+    },
+    {
+      "path": ".eidolons/forge/schemas/reasoning-report.envelope.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "role": "other",
       "mode": "created"
     },
     {
@@ -196,5 +203,10 @@
     "reads_network": false,
     "writes_repo": false,
     "persists": []
+  },
+  "ecl": {
+    "envelope_version": "2.0",
+    "outbound_artifacts": ["reasoning-report"],
+    "inbound_artifacts":  ["reasoning-request"]
   }
 }

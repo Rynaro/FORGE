@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.5.0] — 2026-05-26
+
+### Changed
+- Declares EIIS v1.4 conformance (`EIIS_VERSION = 1.4`).
+- BREAKING (install-target): `SKILL.md` (root Codex dispatch file), `CLAUDE.md`,
+  `README.md`, and `DESIGN-RATIONALE.md` are no longer copied to `<target>/`.
+  The source-repo files at the FORGE repo root are unchanged. If Codex host
+  wiring is added in a future release, the dispatch file will land at
+  `./.codex/agents/forge.md` (per EIIS v1.4 §4.2.8).
+- `agent.md` is now recorded in `files_written[]` with `role: "agent-profile"`
+  (was `"entry-point"`; EIIS v1.4 §1.8.6).
+- `.claude/agents/forge.md` heredoc rewritten per EIIS v1.4 §4.2.6: body now
+  references both `./.eidolons/forge/agent.md` (P0 rules) and
+  `./.eidolons/forge/SPEC.md` (deep spec). Legacy `REASONER.md` and `AGENTS.md`
+  references removed.
+- `templates/reasoning-report.envelope.json` moved to `schemas/` in the source
+  repo and install target (EIIS v1.4 §1.7 whitelist: `templates/` only allows
+  `*.md`; JSON envelopes belong under `schemas/` per §1.7.2).
+- Manifest: `canonical_inventory_strict: true` added (EIIS v1.4 §2.3).
+
+### Added
+- `<target>/ECL_VERSION` is now written by `install.sh` with `role: "ecl-version"`
+  (EIIS v1.4 §3.7.1; closes scout G3). FORGE source declares `ECL_VERSION = 2.0`.
+- `canonical_inventory_sweep` helper: manifest-driven sweep removes any file under
+  `<target>/` not in the current run's `files_written[]` (EIIS v1.4 §6.X).
+  Runs after all writes, before the manifest is finalised.
+- `LEGACY_SPEC_FILES` extended with `SKILL.md`, `CLAUDE.md`, `README.md`,
+  `DESIGN-RATIONALE.md` for the belt-and-braces early sweep (§6.X.5 MAY).
+
 ## [1.4.1] — 2026-05-26
 
 ### Fixed
