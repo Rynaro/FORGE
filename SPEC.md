@@ -42,7 +42,7 @@ F ──▶ O ──▶ R ──▶ G ──┬──▶ E (gates pass)
 
 1. **Generate ≥3 hypotheses** — genuinely distinct positions, not strawmen. Each must be defensible.
 2. **Stress-test each** — for every hypothesis, ask: "What would have to be true for this to be the best choice?" and "What evidence would disprove this?"
-3. **Score across dimensions** — load `skills/deliberation/SKILL.md` for the scoring rubric.
+3. **Score across dimensions** — load `skills/deliberation.md` for the scoring rubric.
 4. **Identify second-order effects** — consequences the requester might not have considered.
 5. **Surface [ASSUMPTION] markers** — every inference that depends on unstated premises.
 
@@ -100,9 +100,9 @@ Load on-demand. Do NOT pre-load.
 
 | Trigger | Skill File |
 |---------|-----------|
-| Entering Frame phase or scoping a problem | `skills/framing/SKILL.md` |
-| Entering Reason phase or scoring hypotheses | `skills/deliberation/SKILL.md` |
-| Entering Gate phase or verifying reasoning | `skills/verification/SKILL.md` |
+| Entering Frame phase or scoping a problem | `skills/framing.md` |
+| Entering Reason phase or scoring hypotheses | `skills/deliberation.md` |
+| Entering Gate phase or verifying reasoning | `skills/verification.md` |
 
 ## Template Loading
 
@@ -171,4 +171,4 @@ per ECL §5.3.
 
 ---
 
-*Reasoner v1.3.0*
+*Reasoner v1.5.1*

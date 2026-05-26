@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.1] — 2026-05-26
+
+### Fixed
+- fix: SPEC.md skill path refs updated from subdir-style to flat layout (matches v1.3+ install convention). Three stale `skills/<phase>/SKILL.md` references replaced with `skills/<phase>.md` (`framing`, `deliberation`, `verification`).
+
 ## [1.5.0] — 2026-05-26
 
 ### Changed
