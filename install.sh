@@ -226,6 +226,9 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     mkdir -p "$TARGET/templates"
     mkdir -p "$TARGET/schemas"
 
+    # Sweep legacy v1.2-era artefacts before writing any new content.
+    cleanup_legacy_v1_2 "$TARGET"
+
     # copy_tracked <src-rel> <dst> <role>
     copy_tracked() {
       local src="$1" dst="$2" role="$3"
