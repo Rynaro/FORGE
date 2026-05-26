@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.1] — 2026-05-26
+
+### Fixed
+- `install.sh` now sweeps legacy v1.2-era artefacts on upgrade: removes stale
+  `<TARGET>/REASONER.md`, the dead `<TARGET>/AGENTS.md` install-target copy
+  (retired in v1.4.0 — source repo retains `AGENTS.md` for EIIS §1.1 conformance),
+  and any `<TARGET>/skills/{deliberation,framing,verification}/` subdir trees left
+  behind by pre-v1.3 installs. Fresh installs are unaffected (cleanup is a no-op
+  when no legacy files are present).
+
 ## [1.4.0] — 2026-05-25 — EIIS v1.3 install-layout normalization
 
 ### Changed
