@@ -1,3 +1,65 @@
+# Canary Missions — FORGE
+
+> v1.13.0 DSL-format missions for `eidolons canary forge`. Legacy free-form
+> missions preserved under "Legacy mission catalog (pre-DSL)" below.
+
+---
+
+## Mission: smoke-default
+
+### Prompt
+
+FORGE, evaluate this trade-off:
+
+> Given a team of 3 engineers, a 6-week deadline, and an existing Rails monolith at 80k LOC, should we extract the billing service into a separate microservice now, or defer to next quarter? Constraints: a PCI compliance audit is scheduled in 8 weeks, and there is no additional infrastructure budget this quarter.
+
+Walk the cycle (Frame → Observe → Reason → Gate → Emit). Produce a verdict using the trade-off-analysis template. Do NOT request tool use, read files, or fetch data — reason from the provided constraints.
+
+### Expected output shape
+
+A response that opens with a Frame section identifying the decision type as TRADE-OFF and listing the hard constraints. The Observe section inventories the provided evidence and flags missing data as `[GAP]` rather than fabricating it. The Reason section presents at least three distinct hypotheses (e.g. extract now, defer, partial extraction), each with a falsification test. The Gate section confirms soundness or triggers one REFORGE pass. The Emit section delivers the trade-off-analysis structure with a `[VERDICT]` marker, a confidence percentage (0-100), at least one `[REVERSAL-CONDITION]`, at least one `[TRADE-OFF]` marker, and a handoff label naming the next Eidolon (typically `→ SPECTRA` for planning follow-through).
+
+### Validation criteria
+
+- MUST contain heading: `## Frame`
+- MUST contain phrase: `\[VERDICT\]`
+- MUST contain phrase: `\[REVERSAL-CONDITION\]`
+- MUST contain phrase: `\[TRADE-OFF\]`
+- MUST contain phrase: `confidence`
+- MUST contain phrase: `hypothes`
+- MUST contain phrase: `handoff|→`
+- SHOULD contain phrase: `PCI`
+- SHOULD have token count between 1000 and 3500
+
+---
+
+## Mission: frame-guard
+
+### Prompt
+
+FORGE, should we use microservices?
+
+### Expected output shape
+
+The agent does NOT begin generating hypotheses or producing a verdict. It refuses to deliberate on an unbounded question and emits a concise clarification request listing the missing inputs required before deliberation can begin (specific context, hard constraints, success criteria). The response is short — no `[VERDICT]` marker, no hypothesis numbering, no trade-off matrix.
+
+### Validation criteria
+
+- MUST contain phrase: `Frame`
+- MUST contain phrase: `clarif|specific|constraint|criteria`
+- MUST have token count between 50 and 600
+- SHOULD contain phrase: `context`
+- SHOULD contain phrase: `success criteria`
+
+---
+
+## Legacy mission catalog (pre-DSL)
+
+> The original three free-form missions ("Microservice extraction trade-off",
+> "Vague question handling", "Scope escalation resistance") are preserved
+> below as historical reference. The v1.13.0 validator parses only the
+> `## Mission: <id>` blocks above.
+
 # FORGE Canary Missions
 
 Smoke-test deliberations for verifying correct Reasoner behavior after install

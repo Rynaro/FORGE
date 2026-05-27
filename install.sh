@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ──────────────────────────────────────────────────────────
-# Reasoner v1.5.1 — Install Script (EIIS-1.4 conformant)
+# Reasoner v1.5.2 — Install Script (EIIS-1.4 conformant)
 #
 # Installs the Reasoner deliberation agent into any project.
 # Usage: bash install.sh [OPTIONS]
@@ -11,7 +11,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
 EIDOLON_SLUG="forge"
-EIDOLON_VERSION="1.5.1"
+EIDOLON_VERSION="1.5.2"
 METHODOLOGY="FORGE"
 
 # Legacy artefacts swept by cleanup_legacy_v1_2 (belt-and-braces early sweep,
