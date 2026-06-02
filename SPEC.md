@@ -152,6 +152,37 @@ The Reasoner holds no tools, retrieves nothing, writes to no external store, and
 
 ---
 
+## 9 — Memory protocol (CRYSTALIUM)
+
+FORGE uses CRYSTALIUM for cross-session deliberation memory. Full protocol
+detail in the nexus cortex: `methodology/cortex/memory-protocol.md`.
+
+| Hook | Phase | Call |
+|------|-------|------|
+| **Recall pre-flight** | F — Frame (intake) | `recall(scope={project, agent_class_visibility:"forge"}, query=<decision>, k=5, layers=[semantic,episodic,procedural])` |
+| **Plan checkpoint** | R — Reason (per pass) | `plan_checkpoint(plan_id, state=<deliberation snapshot incl. scope>, step, metadata)` |
+| **Plan replan** | R — Reason (on branch change) | `plan_replan(plan_id, from_checkpoint_id, new_plan={..., supersedes_id})` |
+| **Ingest spine** | E — Emit (after envelope) | `ingest(envelope, payload=<reasoning-report>)` → T1, `from.eidolon=forge` |
+| **Direct commit** | E — Emit (optional notes) | `commit(layer=episodic, provenance={author_agent:"forge"})` |
+| **Session end** | E — Emit (once per deliberation) | `session_end()` → triggers Dream consolidation |
+
+**FORGE-specific extension — plan checkpoints:** During the Reason phase, FORGE
+checkpoints each reasoning pass to the CRYSTALIUM execution layer
+(`plan_checkpoint`) and records branch changes (`plan_replan`). This produces an
+auditable deliberation history: which alternatives were live at each pass, and
+which was promoted and why. Designed for G2 (≥3 plausible alternatives) and
+multi-pass deliberations where the winning hypothesis may shift.
+
+**Trust tier:** T1 for all calls (set process-wide by `CRYSTALIUM_CALLER_TIER=T1`
+in the shared `.mcp.json`). Attribution via `provenance.author_agent="forge"` on
+every direct `commit`.
+
+**Graceful-skip contract:** all six memory calls are optional — if
+`mcp__crystalium__*` tools are unavailable, proceed without memory. FORGE remains
+EIIS-standalone-conformant and fully operational without CRYSTALIUM installed.
+
+---
+
 ## 7 — ECL compatibility
 
 FORGE v1.3.0 is the first version that emits ECL v1.0 envelopes.
@@ -171,4 +202,4 @@ per ECL §5.3.
 
 ---
 
-*Reasoner v1.5.1*
+*Reasoner v1.6.0*

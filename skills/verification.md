@@ -180,4 +180,54 @@ Every emitted verdict includes:
 
 ---
 
-*Reasoner v1.3.0 — Verification Skill*
+## CRYSTALIUM Memory Persistence (Emit phase)
+
+After the envelope sidecar is validated (checklist above) and before handing off,
+persist the reasoning-report to CRYSTALIUM:
+
+### Step 1 — Ingest the ECL envelope
+
+```
+mcp__crystalium__ingest(
+  envelope = <the validated reasoning-report.envelope.json contents>,
+  payload  = <reasoning-report.md contents>
+)
+```
+
+This records the verdict at T1 with full ECL provenance (`from.eidolon=forge`
+drives tier derivation; `integrity.value` is stored as `provenance.content_hash`).
+Prior verdicts become retrievable by FORGE's Frame-phase `recall` in future sessions.
+
+### Step 2 — Direct episodic notes (optional)
+
+For notable observations from the deliberation not captured in the verdict body
+(e.g. a recurring constraint pattern, a second-order effect worth tracking):
+
+```
+mcp__crystalium__commit(
+  layer      = "episodic",
+  payload    = <observation>,
+  provenance = { author_agent: "forge", decision_type: <type>, project: <cwd-project> }
+)
+```
+
+`author_agent` MUST be `"forge"` on every direct commit.
+
+### Step 3 — Session end
+
+After ingest (and any optional commits) complete, call:
+
+```
+mcp__crystalium__session_end()
+```
+
+This triggers Dream consolidation asynchronously. Call it once per deliberation
+completion — not once per pass.
+
+**Graceful skip:** if `mcp__crystalium__*` tools are unavailable (CRYSTALIUM not
+installed), skip all three steps and proceed with the handoff normally. Never
+hard-fail on absent CRYSTALIUM tools. FORGE is EIIS-standalone-conformant.
+
+---
+
+*Reasoner v1.6.0 — Verification Skill*

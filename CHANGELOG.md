@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.6.0] — 2026-06-02
+
+### Added
+- **CRYSTALIUM memory pipeline** — embed the recall → plan_checkpoint/plan_replan
+  → ingest → session_end protocol into the FORGE methodology.
+  - `agent.md` + `skills/framing.md`: recall pre-flight at Frame intake —
+    surfaces prior verdicts, fired reversal conditions, and constraint patterns
+    before decomposition begins (`k=5`, layers semantic/episodic/procedural).
+  - `skills/deliberation.md`: plan checkpoints during Reason — `plan_checkpoint`
+    at each pass boundary; `plan_replan` when the winning hypothesis changes or a
+    REFORGE revises the leading alternative. Produces an auditable deliberation
+    trace at the CRYSTALIUM execution layer (T0/T1 only).
+  - `skills/verification.md`: ingest spine at Emit — after the ECL envelope is
+    validated, `ingest(envelope, payload=<reasoning-report>)` persists the verdict
+    at T1 (`from.eidolon=forge`). Optional `commit(layer=episodic,
+    provenance={author_agent:"forge"})` for notable mid-cycle observations.
+    `session_end()` triggers Dream consolidation once per deliberation.
+  - Graceful-skip contract in every touched skill — absent CRYSTALIUM never
+    causes a hard-fail; FORGE remains EIIS-standalone-conformant.
+- `SPEC.md §9` — "Memory protocol (CRYSTALIUM)" section: phase-precise placement
+  table, FORGE-specific plan_checkpoint rationale, trust-tier note.
+- `evals/canary-missions.md` — `memory-round-trip` mission: asserts recall at
+  Frame, plan_checkpoint during Reason, ingest at Emit with `author_agent=forge`
+  + T1, and graceful-skip when CRYSTALIUM is absent.
+
+### Changed
+- `install.sh`: `EIDOLON_VERSION` bumped `1.5.2` → `1.6.0`.
+
+### Notes
+- ECL_VERSION (`2.0`) and EIIS_VERSION (`1.4`) unchanged — no envelope-format
+  or install-layout changes.
+- CRYSTALIUM tools (`mcp__crystalium__*`) are allowlist-injected by the nexus
+  shared `.mcp.json` (shipped in nexus v1.2.0); no wiring work in this repo.
+
 ## [1.5.2] — 2026-05-27
 
 ### Changed

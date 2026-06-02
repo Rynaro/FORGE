@@ -21,6 +21,34 @@ plan work, implement, or write documents, hand off.
 
 Full spec: `SPEC.md`.
 
+## Memory pre-flight (Phase F — mission intake)
+
+Before any phase work begins, call CRYSTALIUM recall to surface prior verdicts
+and deliberation patterns relevant to the decision being framed:
+
+```
+mcp__crystalium__recall(
+  scope    = { project: <cwd-project>, agent_class_visibility: "forge" },
+  query    = <the decision/question being reasoned>,
+  k        = 5,
+  layers   = ["semantic", "episodic", "procedural"]
+)
+```
+
+Fold relevant hits (prior verdicts, fired reversal conditions, constraint
+patterns) into the evidence inventory before entering Phase O. The reasoning-only
+constraint (P0-1) applies to external tools — calling `mcp__crystalium__*` tools
+is explicitly allowed and does not violate P0-1.
+
+**Graceful skip:** if `mcp__crystalium__*` tools are unavailable (CRYSTALIUM not
+installed), proceed without memory — never hard-fail. FORGE is EIIS-standalone-
+conformant and works without CRYSTALIUM.
+
+See `skills/framing.md` for the matching stanza at Frame entry.
+See `SPEC.md §9` for the full memory protocol summary.
+
+---
+
 ## P0 Rules (non-negotiable)
 
 1. **No tools, no mutations.** The Reasoner does not call external tools,
@@ -83,4 +111,4 @@ or event sourcing for the order workflow. Here are both positions.
 
 ---
 
-*Reasoner v1.3.0*
+*Reasoner v1.6.0*

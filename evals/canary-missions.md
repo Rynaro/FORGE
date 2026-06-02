@@ -53,6 +53,50 @@ The agent does NOT begin generating hypotheses or producing a verdict. It refuse
 
 ---
 
+## Mission: memory-round-trip
+
+### Prompt
+
+FORGE, evaluate this trade-off:
+
+> Given a distributed system where service A calls service B synchronously, should
+> we introduce an async message queue to decouple them? Context: B averages 40ms
+> p99 latency; the team has no prior experience with message queues; there is a
+> hard SLA requiring end-to-end p99 < 200ms.
+
+Walk the full FORGE cycle. Before framing, confirm you have attempted to recall
+prior context from CRYSTALIUM (or note it is absent). During Reason, note each
+deliberation pass with a plan checkpoint (or note CRYSTALIUM is absent). In the
+Emit section, after producing the reasoning-report envelope, note whether you
+called `mcp__crystalium__ingest` with `from.eidolon=forge` at T1 and
+`mcp__crystalium__session_end()` (or that CRYSTALIUM was absent and both were
+skipped).
+
+### Expected output shape
+
+A response that runs the full FORGE cycle. The Frame section opens by noting a
+`recall` call (or graceful-skip if CRYSTALIUM is absent). The Reason section
+contains at least one explicit reference to a `plan_checkpoint` call per pass (or
+graceful-skip). The Emit section contains an explicit note that
+`mcp__crystalium__ingest` was called with `author_agent: forge` at T1 and
+`mcp__crystalium__session_end()` was called — or, if CRYSTALIUM is absent, an
+explicit graceful-skip note. The deliberation itself produces ≥3 hypotheses,
+a `[VERDICT]`, a `[REVERSAL-CONDITION]`, and a handoff label.
+
+### Validation criteria
+
+- MUST contain phrase: `recall|mcp__crystalium__recall`
+- MUST contain phrase: `plan_checkpoint|mcp__crystalium__plan_checkpoint`
+- MUST contain phrase: `ingest|mcp__crystalium__ingest`
+- MUST contain phrase: `session_end|mcp__crystalium__session_end`
+- MUST contain one of: `from.eidolon.*forge|author_agent.*forge|forge.*T1|absent|unavailable|not installed`
+- MUST contain phrase: `\[VERDICT\]`
+- MUST contain phrase: `\[REVERSAL-CONDITION\]`
+- MUST contain phrase: `hypothes`
+- SHOULD have token count between 1200 and 4000
+
+---
+
 ## Legacy mission catalog (pre-DSL)
 
 > The original three free-form missions ("Microservice extraction trade-off",
