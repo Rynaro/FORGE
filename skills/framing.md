@@ -4,6 +4,34 @@ Loaded during the Frame phase. Governs how the Reasoner decomposes problems into
 
 ---
 
+## Memory pre-flight (Frame — mission intake)
+
+Before any decomposition work begins, call CRYSTALIUM recall to surface prior
+verdicts, known constraints, and recurring deliberation patterns for this project:
+
+```
+mcp__crystalium__recall(
+  scope    = { project: <cwd-project>, agent_class_visibility: "forge" },
+  query    = <the decision question being framed>,
+  k        = 5,
+  layers   = ["semantic", "episodic", "procedural"]
+)
+```
+
+Fold relevant hits (prior verdicts on related decisions, reversal conditions that
+have already fired, recurring constraint patterns) into the evidence inventory
+before Step 1 below. Prior deliberation outputs surface at T1 episodic, making
+prior FORGE verdicts directly reusable.
+
+**Graceful skip:** if `mcp__crystalium__*` tools are unavailable (CRYSTALIUM not
+installed), proceed without memory — never hard-fail. FORGE is EIIS-standalone-
+conformant and works without CRYSTALIUM.
+
+See `agent.md` §"Memory pre-flight" for the always-loaded note. See `SPEC.md §9`
+for the full memory protocol summary.
+
+---
+
 ## Problem Decomposition Protocol
 
 ### Step 1: Extract the Core Decision
@@ -111,4 +139,4 @@ Claims built on L-reliability evidence must carry `[ASSUMPTION]` markers.
 
 ---
 
-*Reasoner v1.2.0 — Framing Skill*
+*Reasoner v1.6.0 — Framing Skill*

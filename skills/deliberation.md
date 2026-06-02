@@ -163,6 +163,58 @@ If the winning hypothesis is the same across all passes, confidence increases by
 
 ---
 
+## Plan Checkpoints (CRYSTALIUM execution layer)
+
+During multi-pass deliberation, FORGE checkpoints each reasoning branch to the
+CRYSTALIUM execution layer. This makes the deliberation history auditable and
+recoverable — if context is exhausted mid-deliberation, a `plan_replan` call
+records which alternative was selected and why.
+
+### Checkpoint at each pass boundary
+
+After scoring is complete for a pass, record the deliberation state:
+
+```
+mcp__crystalium__plan_checkpoint(
+  plan_id  = <decision-id, e.g. "forge-<thread_id>-pass<N>">,
+  state    = {
+    pass:         <pass number>,
+    scope:        <framed question>,
+    top_hypotheses: [{ id, name, score }],
+    gaps:         [<active GAP markers>]
+  },
+  step     = "pass<N>-scored",
+  metadata = { depth: <simple|standard|deep>, project: <cwd-project> }
+)
+```
+
+### Replan when a branch is revised
+
+If the winning hypothesis changes between passes (or a REFORGE revises the leading
+alternative), record the branching decision before continuing:
+
+```
+mcp__crystalium__plan_replan(
+  plan_id            = <same plan_id as prior checkpoint>,
+  from_checkpoint_id = <checkpoint_id returned by prior plan_checkpoint>,
+  new_plan           = {
+    selected_hypothesis: <id and name>,
+    supersedes_id:       <id of demoted hypothesis>,
+    reason:              <why the branch changed>
+  }
+)
+```
+
+The old checkpoint is preserved (bi-temporal); the replan creates a new version.
+This produces an auditable deliberation trace: which alternatives were live at each
+pass, and which branch was promoted and why.
+
+**Graceful skip:** if `mcp__crystalium__*` tools are unavailable (CRYSTALIUM not
+installed), proceed without checkpoints — never hard-fail. Deliberation continues
+normally without execution-layer recording.
+
+---
+
 ## Anti-Patterns in Reasoning
 
 | Anti-Pattern | Signal | Remedy |
@@ -176,4 +228,4 @@ If the winning hypothesis is the same across all passes, confidence increases by
 
 ---
 
-*Reasoner v1.2.0 — Deliberation Skill*
+*Reasoner v1.6.0 — Deliberation Skill*
