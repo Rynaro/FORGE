@@ -97,6 +97,36 @@ a `[VERDICT]`, a `[REVERSAL-CONDITION]`, and a handoff label.
 
 ---
 
+## Mission: self-consistency-merge
+
+### Prompt
+
+FORGE, this is a Deep-depth, irreversible, system-wide decision — run G2 self-consistency.
+
+> We must choose the storage engine for a new event-sourcing ledger that every service will write to. Option A: keep the existing single PostgreSQL cluster with a new append-only table. Option B: migrate the ledger to a dedicated Kafka + compacted-topic store. Constraints: the migration is irreversible once the first production event is written (no dual-write window budgeted); blast radius is system-wide (all 9 services emit ledger events); a hard SLA requires end-to-end write p99 < 50ms; the team has no prior Kafka operational experience. Ambiguity is high — both options have credible advocates.
+
+Run the self-consistency mode: generate at least three perspective-diverse, mutually-blind reasoning traces over a single frozen Frame+Observe inventory, then judge-merge them on structural agreement. Do NOT request tool use, read files, or fetch data — reason from the provided constraints.
+
+### Expected output shape
+
+A response that frames the decision as a high-stakes TRADE-OFF flagged Deep depth, freezes the Frame+Observe inventory once, then fans out into N≥3 perspective-diverse traces (e.g. evidence-maximizing, pre-mortem/failure-first, constraint-relaxation), each reasoning independently and mutually-blind from the same frozen inventory. A structural-agreement judge-merge tallies the modal hypothesis, computes a consensus score against the 60% floor, and cross-references reversal conditions that recurred across ≥2 traces. The merged confidence is anchored on the structural-agreement score (NOT an average of the traces' verbalized confidence numbers). If consensus is below the 60% floor it emits a `[DISPUTED]` verdict with the live positions; otherwise a single merged `[VERDICT]`. The output carries at least one `[REVERSAL-CONDITION]`, a confidence percentage, and a handoff label — and, for a near-floor or high-stakes merge, an opt-in `→ independent-verifier` handoff (a recommendation, never an executed tool call). No tools are called.
+
+### Validation criteria
+
+- MUST contain phrase: `trace|self-consistency`
+- MUST contain phrase: `agreement|consensus|merge`
+- MUST contain phrase: `60%|floor|consensus`
+- MUST contain phrase: `\[VERDICT\]|\[DISPUTED\]`
+- MUST contain phrase: `\[REVERSAL-CONDITION\]`
+- MUST contain phrase: `confidence`
+- MUST contain phrase: `hypothes`
+- MUST contain phrase: `handoff|→`
+- SHOULD contain phrase: `structural|agreement`
+- SHOULD contain phrase: `independent.?verifier|cross-model|blind`
+- SHOULD have token count between 1500 and 4500
+
+---
+
 ## Legacy mission catalog (pre-DSL)
 
 > The original three free-form missions ("Microservice extraction trade-off",

@@ -139,4 +139,4 @@ Claims built on L-reliability evidence must carry `[ASSUMPTION]` markers.
 
 ---
 
-*Reasoner v1.6.0 — Framing Skill*
+*Reasoner v1.7.0 — Framing Skill*
