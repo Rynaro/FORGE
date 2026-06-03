@@ -88,6 +88,69 @@ This thesis draws the line between the Reasoner and every other agent in the sta
 
 **Rationale**: Different decision types require different structural elements. A trade-off analysis needs a decision matrix. A root cause analysis needs causal chains. A feasibility assessment needs a constraint walkthrough. Templates enforce structural completeness — you can't skip the constraint walkthrough in a feasibility assessment because the template makes its absence obvious.
 
+### 9. Self-Consistency Mode: Perspective-Diverse Traces + Structural-Agreement Merge, Not Naive Debate
+
+**Research input**: The 2026 reasoning-frontier digest converges on four findings
+that jointly shape FORGE's TRANCE form. (a) Single-reasoner self-consistency
+saturates around a ~0.74–0.76 accuracy ceiling; **independent / cross-model
+verifiers** are the lever that pushes past it (R2-08). (b) Naive multi-agent
+debate does **not** beat self-consistency until it is tuned — and naive
+same-prompt sampling under-delivers; **perspective diversity** is what makes
+multi-trace pay off (R3-04). (c) Self-MoA: **intra-model sample diversity (varied
+reasoning stance) dominates inter-model diversity** — quality and stance-variety
+matter more than running multiple models (R3-06). (d) **Verbalized confidence is
+miscalibrated and poorly diagnostic** of correctness (R5-11), and chain-of-thought
+rationales are often unfaithful to the actual decision process (R2-02).
+
+**Decision**: Operationalize the dormant G2 TRANCE form (`trance-matrix.md:17` —
+"N=3 / N=5 sampled traces, majority-vote / judge-merge") as a fully specified,
+gated mode: **N perspective-diverse, mutually-blind reasoning traces** over a
+frozen Frame+Observe inventory, each driven by a distinct adversarial persona
+(evidence-max / pre-mortem / constraint-relax / inversion / simplest-viable),
+merged by a **structural-agreement judge-merge** at the 60% consensus floor
+(`trance-matrix.md:51`), with an **opt-in independent-verifier handoff** as the
+ceiling-breaker. Full protocol: `skills/self-consistency.md`; spec gate:
+`SPEC.md §10`.
+
+**Rationale (research → design):**
+
+- **Perspective-diverse over N-identical** — because R3-04 (debate needs tuning)
+  and R3-06 (stance diversity dominates) say naive same-prompt sampling
+  under-performs. The fixed persona table *tunes* the diversity rather than
+  hoping random sampling supplies it.
+- **Structural agreement over verbalized confidence** — because R5-11 (confidence
+  miscalibrated) and R2-02 (CoT unfaithful) mean the trustworthy signal is *how
+  many independently-biased traces converged*, not what any trace claims about
+  its own certainty. Merged confidence IS the agreement count / N, never an
+  average of self-grades.
+- **Opt-in independent-verifier handoff, not a debate loop** — R2-08 says
+  cross-model independent verifiers break the self-consistency ceiling, but FORGE
+  is tool-less (P0) and cannot dispatch a second model. So the verifier is a
+  documented `→ independent-verifier` handoff for the orchestrator, not an
+  executed call — the ceiling-breaker is *recommended*, its execution is
+  nexus-level.
+- **Gated, never default** — preserves the opt-in deliberation contract: forcing
+  G2 universally would make FORGE a mandatory critique node, which corrupts its
+  reasoning-only, escalate-on-demand role. The gate (Deep + stakes, OR explicit
+  opt-in) is stated in both `SPEC.md §10` and the skill trigger; `agent.md` is
+  untouched, so standard tier stays single-trace.
+
+**Reconciliation with the "unbounded debate excluded" decision (below):** the
+exclusion table rejects *unbounded* debate / multi-agent deliberation on the
+lazy-agent-collapse finding (Zhang et al., 2025). This decision does **not**
+contradict it — bounded-N, perspective-diverse, single-merge self-consistency is
+precisely the *tuned, capped* form the lazy-agent failure mode argues **for**:
+the collapse happens when contribution is unverified and unbounded; mutual
+blindness + a fixed persona table + a deterministic structural merge are the
+verification and bounds that prevent it. This augments the prior decision; it
+does not reverse it.
+
+**Honesty cap (M-confidence):** the actual accuracy lift past the ~0.74–0.76
+ceiling cannot be *measured* in-repo — that requires a published, budget-matched,
+pass^k, contamination-screened benchmark, which is a nexus-level eval-harness
+deliverable, not a FORGE-repo file. Until it ships, this mode's value is an
+architecture-reasoned, methodology-layer estimate, not a benchmarked figure.
+
 ---
 
 ## What Was Explicitly Excluded (and Why)
@@ -155,11 +218,16 @@ Both sets are defensible; the chosen set is more differentiated phase-to-phase a
 |-----------|-----------------|-------------|
 | SPEC.md (entry point) | ~1,150 | Always when Reasoner active |
 | skills/framing.md | ~920 | Frame phase |
-| skills/deliberation.md | ~1,100 | Reason phase |
+| skills/deliberation.md | ~1,100 | Reason phase (standard tier) |
 | skills/verification.md | ~950 | Gate phase |
+| skills/self-consistency.md | ~1,300 | Reason phase — **in place of** deliberation.md during a G2 / TRANCE run (gated) |
 | Template (largest: verdict) | ~480 | Per decision type |
 
-**Typical working set**: SPEC.md + one skill + one template ≈ **2,550 tokens**
+**Typical working set**: SPEC.md + one skill + one template ≈ **2,550 tokens**.
+A G2 run swaps `skills/deliberation.md` for `skills/self-consistency.md` (it does
+not load both), so the single-context working set stays ≤ **3,500 tokens**.
+(Parent-dispatched G2 subagents each carry their own working set; the fan-out
+cost is orchestration-level, not a single-context budget concern.)
 
 This is consistent with the stack's design envelope:
 - Scribe: ~2,200 tokens working set

@@ -11,7 +11,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
 EIDOLON_SLUG="forge"
-EIDOLON_VERSION="1.6.0"
+EIDOLON_VERSION="1.7.0"
 METHODOLOGY="FORGE"
 
 # Legacy artefacts swept by cleanup_legacy_v1_2 (belt-and-braces early sweep,
@@ -304,7 +304,7 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
   if [[ "$DRY_RUN" == "true" ]]; then
     echo "[dry-run] Would create: ${TARGET}/"
     echo "[dry-run] Would copy: SPEC.md, agent.md, ECL_VERSION"
-    echo "[dry-run] Would copy: skills/framing.md, skills/deliberation.md, skills/verification.md"
+    echo "[dry-run] Would copy: skills/framing.md, skills/deliberation.md, skills/verification.md, skills/self-consistency.md"
     echo "[dry-run] Would wire skills to .claude/skills/forge-<phase>/SKILL.md"
     echo "[dry-run] Would copy: templates/verdict.md, trade-off-analysis.md, feasibility-assessment.md, root-cause-analysis.md, conflict-resolution.md"
     echo "[dry-run] Would copy: schemas/reasoning-report-profile.v1.json, schemas/ecl-envelope.v1.json, schemas/reasoning-report.envelope.json"
@@ -369,6 +369,7 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     wire_skill "framing"
     wire_skill "deliberation"
     wire_skill "verification"
+    wire_skill "self-consistency"
 
     # Copy templates (all must be *.md per EIIS v1.4 §1.7 whitelist).
     # Note: reasoning-report.envelope.json was in templates/ before v1.5.0;
@@ -718,7 +719,7 @@ sha256_val() {
 
 build_skills_json() {
   local skills_json="" sep=""
-  for skill in framing deliberation verification; do
+  for skill in framing deliberation verification self-consistency; do
     local src_path="${TARGET_CLEAN}/skills/${skill}.md"
     local vendor_path=".claude/skills/${EIDOLON_SLUG}-${skill}/SKILL.md"
     local src_sha

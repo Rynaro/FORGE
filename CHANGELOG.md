@@ -1,5 +1,48 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **Self-Consistency Mode (G2 / TRANCE)** — operationalizes FORGE's dormant
+  TRANCE form into a fully specified, gated, opt-in mode.
+  - `skills/self-consistency.md` (new flat skill) — N perspective-diverse,
+    mutually-blind reasoning traces (N=3 high-stakes / N=5 irreversible-
+    system-wide) over a frozen Frame+Observe inventory, drawn from a fixed
+    adversarial-persona table (evidence-max / pre-mortem / constraint-relax /
+    inversion / simplest-viable); a structural-agreement judge-merge with the
+    60% consensus floor; `[DISPUTED]` emission below floor; and an opt-in
+    independent/cross-model verifier HANDOFF as the ceiling-breaker. Confidence
+    anchors on cross-trace structural agreement, NOT averaged verbalized
+    confidence. Bounded (exactly N, one merge pass; composes with — does not
+    extend — the 3-pass/1-REFORGE cap). Loads in place of `skills/deliberation.md`
+    for the Reason phase of a G2 run.
+  - `SPEC.md §10` — "Self-Consistency Mode (G2 / TRANCE)": the explicit gate
+    (Deep-depth complexity AND stakes flag, OR explicit opt-in — never default),
+    the reasoning-only refusal restatement (no tool access at TRANCE), and the
+    Skill-Loading routing row.
+  - `DESIGN-RATIONALE.md §9` — research → decision mapping: perspective-diverse
+    over N-identical (R3-04, R3-06); structural agreement over verbalized
+    confidence (R5-11, R2-02); opt-in verifier handoff vs naive debate (R2-08),
+    reconciled with the prior unbounded-debate exclusion. Token Budget table
+    updated.
+  - `evals/canary-missions.md` — `self-consistency-merge` DSL mission asserting
+    N≥3 diverse traces, structural-agreement merge, the 60% floor, and gated
+    opt-in.
+
+### Changed
+- `install.sh`: `wire_skill "self-consistency"` registered (plus dry-run echo and
+  `build_skills_json` enumeration); `EIDOLON_VERSION` bumped `1.6.0` → `1.7.0`.
+
+### Notes
+- `agent.md` UNTOUCHED — the ≤1000-token P0 budget gate is preserved (~956
+  est-tokens); the mode is reachable via `SPEC.md §10` + the SPEC Skill-Loading
+  table without entry-point edits. `EIIS_VERSION` (`1.4`) and `ECL_VERSION` (`2.0`)
+  unchanged — no install-layout or envelope-format change. Mode is opt-in/gated,
+  NOT a mandatory critique gate.
+- Score delta is a methodology-layer estimate (7.5 → ~8.5, M-confidence,
+  unbenchmarked). The benchmark that would lift it past M is a nexus-level eval
+  harness, out of scope for this repo.
+
 ## [1.6.0] — 2026-06-02
 
 ### Added

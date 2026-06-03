@@ -103,6 +103,10 @@ Load on-demand. Do NOT pre-load.
 | Entering Frame phase or scoping a problem | `skills/framing.md` |
 | Entering Reason phase or scoring hypotheses | `skills/deliberation.md` |
 | Entering Gate phase or verifying reasoning | `skills/verification.md` |
+| Entering a G2 / self-consistency escalation (Deep + high-stakes, or opt-in) | `skills/self-consistency.md` |
+
+`skills/self-consistency.md` loads **in place of** `skills/deliberation.md` for the
+Reason phase of a G2 run (see §10). It is gated, never default.
 
 ## Template Loading
 
@@ -202,4 +206,49 @@ per ECL §5.3.
 
 ---
 
-*Reasoner v1.6.0*
+## 10 — Self-Consistency Mode (G2 / TRANCE)
+
+FORGE's TRANCE form is **self-consistency on reasoning chains** — N
+perspective-diverse, mutually-blind deliberation traces over a frozen
+Frame+Observe inventory, merged on **structural agreement**. Full protocol:
+`skills/self-consistency.md` (loads in place of `skills/deliberation.md` for the
+Reason phase of a G2 run).
+
+**Gate — when it fires (never default).** Self-consistency activates ONLY when
+**both** a complexity flag and a stakes flag hold — Deep depth (Framing Step-4
+total 8–9, with an irreversible OR system-wide stakes flag live) — **OR** on
+explicit user/orchestrator opt-in. Standard tier stays single-trace FORGE
+(Frame → Observe → Reason → Gate → Emit, 1–3 passes). FORGE is **never** a
+mandatory critique gate; this mode is opt-in escalation, not a universal gate.
+
+**Protocol summary.**
+
+- **N.** N=3 for Deep + high-stakes; N=5 for irreversible AND system-wide blast
+  radius. N is fixed before fan-out; **no re-sampling beyond N**. The mode adds
+  parallelism, not a fresh budget — it composes with, does not extend, the
+  3-pass / 1-REFORGE cap.
+- **Diversity.** Each trace takes a distinct adversarial stance from a fixed
+  persona table (evidence-max / pre-mortem / constraint-relax / inversion /
+  simplest-viable). Diversity is across reasoning *stance*, not model.
+- **Independence.** Traces are mutually blind — none reads another's verdict
+  before the merge. The mechanically-stronger form is N parent-dispatched
+  clean-context FORGE subagents; the in-context fallback is N sequential-blind
+  passes.
+- **Merge.** A single deterministic judge-merge: tally the modal hypothesis,
+  compute `structural_agreement = traces-on-modal / N`, and collect any
+  `[REVERSAL-CONDITION]`/`[RISK]` surfaced independently by ≥2 traces. PASS at
+  the **60% consensus floor**; below it, emit `[DISPUTED]` with the live
+  positions. Merged confidence **is** the structural-agreement score — NOT an
+  average of the traces' verbalized confidence numbers.
+- **Verifier hook (opt-in).** A near-floor or high-stakes merge MAY emit a
+  `→ independent-verifier` handoff recommending a separate-instance or
+  cross-model re-derivation. This is a **handoff, not an executed call**.
+
+**Reasoning-only at TRANCE.** Refused capabilities stay refused: FORGE gains **no
+tool access** at G2. The fan-out is reasoning-only; the verifier hook is a
+handoff/`[ACTION]`, never a tool call. The mode is a methodology-layer
+estimate, not a benchmarked accuracy figure.
+
+---
+
+*Reasoner v1.7.0*
