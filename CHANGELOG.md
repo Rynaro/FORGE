@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.7.0] — 2026-06-03
 
 ### Added
 - **Self-Consistency Mode (G2 / TRANCE)** — operationalizes FORGE's dormant
@@ -34,9 +34,11 @@
   `build_skills_json` enumeration); `EIDOLON_VERSION` bumped `1.6.0` → `1.7.0`.
 
 ### Notes
-- `agent.md` UNTOUCHED — the ≤1000-token P0 budget gate is preserved (~956
+- `agent.md` body UNTOUCHED — the ≤1000-token P0 budget gate is preserved (~956
   est-tokens); the mode is reachable via `SPEC.md §10` + the SPEC Skill-Loading
-  table without entry-point edits. `EIIS_VERSION` (`1.4`) and `ECL_VERSION` (`2.0`)
+  table without entry-point edits. Only the stale `methodology_version` frontmatter
+  stamp was normalized (`1.3.0` → `1.7.0`) alongside the rest of the repo's
+  release-version footers. `EIIS_VERSION` (`1.4`) and `ECL_VERSION` (`2.0`)
   unchanged — no install-layout or envelope-format change. Mode is opt-in/gated,
   NOT a mandatory critique gate.
 - Score delta is a methodology-layer estimate (7.5 → ~8.5, M-confidence,

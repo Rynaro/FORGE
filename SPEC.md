@@ -1,6 +1,6 @@
 ---
 name: reasoner
-version: 1.0.0
+version: 1.7.0
 description: "Structured deliberation specialist. Produces evidence-grounded verdicts for hard problems that resist straightforward answers."
 ---
 

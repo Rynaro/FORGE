@@ -230,4 +230,4 @@ hard-fail on absent CRYSTALIUM tools. FORGE is EIIS-standalone-conformant.
 
 ---
 
-*Reasoner v1.6.0 — Verification Skill*
+*Reasoner v1.7.0 — Verification Skill*

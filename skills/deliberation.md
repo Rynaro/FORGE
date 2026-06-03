@@ -228,4 +228,4 @@ normally without execution-layer recording.
 
 ---
 
-*Reasoner v1.6.0 — Deliberation Skill*
+*Reasoner v1.7.0 — Deliberation Skill*
