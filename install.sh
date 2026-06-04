@@ -304,7 +304,7 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
   if [[ "$DRY_RUN" == "true" ]]; then
     echo "[dry-run] Would create: ${TARGET}/"
     echo "[dry-run] Would copy: SPEC.md, agent.md, ECL_VERSION"
-    echo "[dry-run] Would copy: skills/framing.md, skills/deliberation.md, skills/verification.md, skills/self-consistency.md"
+    echo "[dry-run] Would copy: skills/framing.md, skills/deliberation.md, skills/verification.md, skills/self-consistency.md, skills/verify-incoming.md"
     echo "[dry-run] Would wire skills to .claude/skills/forge-<phase>/SKILL.md"
     echo "[dry-run] Would copy: templates/verdict.md, trade-off-analysis.md, feasibility-assessment.md, root-cause-analysis.md, conflict-resolution.md"
     echo "[dry-run] Would copy: schemas/reasoning-report-profile.v1.json, schemas/ecl-envelope.v1.json, schemas/reasoning-report.envelope.json"
@@ -370,6 +370,7 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     wire_skill "deliberation"
     wire_skill "verification"
     wire_skill "self-consistency"
+    wire_skill "verify-incoming"
 
     # Copy templates (all must be *.md per EIIS v1.4 §1.7 whitelist).
     # Note: reasoning-report.envelope.json was in templates/ before v1.5.0;
@@ -719,7 +720,7 @@ sha256_val() {
 
 build_skills_json() {
   local skills_json="" sep=""
-  for skill in framing deliberation verification self-consistency; do
+  for skill in framing deliberation verification self-consistency verify-incoming; do
     local src_path="${TARGET_CLEAN}/skills/${skill}.md"
     local vendor_path=".claude/skills/${EIDOLON_SLUG}-${skill}/SKILL.md"
     local src_sha

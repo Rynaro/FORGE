@@ -1,5 +1,23 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **Blocking symmetric verify-incoming gate (ECL §6.2.2)** — replaces the
+  earlier opt-in warn-only posture with a mandatory receiver-side integrity
+  gate. `skills/verify-incoming.md` is loaded when an upstream artefact
+  arrives with a sibling `.envelope.json`; FORGE MUST NOT process the payload
+  unless a `verify_pass` trace event (written by the orchestrator's
+  `eidolons verify-envelope --block` pre-step) is on record for the
+  `message_id`. On failure the skill REFUSES and hands control back to the
+  orchestrator (routed to VIGIL or human — never a silent process-anyway).
+  Symmetric distribution: all six Eidolons ship this gate with identical
+  semantics. The mechanical SHA-256 check runs at the orchestrator (full Bash);
+  FORGE enforces the result using only `Read` — no Bash required.
+- `tests/verify-incoming.bats` + `tests/helpers.bash` — bats suite verifying
+  skill content posture (blocking, no warn-only), install registration, manifest
+  entry, vendor SKILL.md copy, and agent.md token budget compliance.
+
 ## [1.7.0] — 2026-06-03
 
 ### Added
