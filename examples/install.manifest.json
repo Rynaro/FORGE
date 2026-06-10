@@ -1,6 +1,6 @@
 {
   "eidolon": "forge",
-  "version": "1.5.0",
+  "version": "1.9.0",
   "methodology": "FORGE",
   "installed_at": "2026-05-26T00:00:00Z",
   "target": "./.eidolons/forge",
@@ -191,6 +191,20 @@
       "source_path": ".eidolons/forge/skills/verification.md",
       "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "vendor_path": ".claude/skills/forge-verification/SKILL.md",
+      "vendor_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "self-consistency",
+      "source_path": ".eidolons/forge/skills/self-consistency.md",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "vendor_path": ".claude/skills/forge-self-consistency/SKILL.md",
+      "vendor_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "verify-incoming",
+      "source_path": ".eidolons/forge/skills/verify-incoming.md",
+      "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "vendor_path": ".claude/skills/forge-verify-incoming/SKILL.md",
       "vendor_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   ],

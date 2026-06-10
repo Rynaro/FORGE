@@ -1,6 +1,18 @@
+---
+name: forge-framing
+description: Governs problem decomposition and constraint extraction during the FORGE Frame phase. Use when the Reasoner enters Phase F to extract the core decision, classify its type, map hard/soft constraints, set deliberation depth, and declare success criteria before any hypothesis work begins.
+metadata:
+  methodology: FORGE
+  phase: F
+---
+
 # Framing Methodology
 
 Loaded during the Frame phase. Governs how the Reasoner decomposes problems into tractable decision structures.
+
+## When to use
+
+Load this skill at the start of Phase F (Frame). Use it to extract the core decision question, classify the decision type (`TRADE-OFF`, `FEASIBILITY`, `ROOT-CAUSE`, `CONFLICT-RESOLUTION`, `CONSTRAINT-SATISFACTION`, `RISK-ASSESSMENT`), map all hard and soft constraints, set the deliberation depth score (1–9), and write the success criteria checklist. Do not proceed to Phase O (Observe) until all five steps are complete. Do not use for the Reason, Gate, or Emit phases.
 
 ---
 
@@ -139,4 +151,4 @@ Claims built on L-reliability evidence must carry `[ASSUMPTION]` markers.
 
 ---
 
-*Reasoner v1.7.0 — Framing Skill*
+*Reasoner — Framing Skill*

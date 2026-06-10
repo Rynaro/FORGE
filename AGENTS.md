@@ -1,15 +1,15 @@
 ---
 name: forge
-version: 1.7.0
+version: 1.9.0
 methodology: FORGE
-methodology_version: 1.7.0
+methodology_version: 1.9.0
 role: Reasoner — structured deliberation and decision intelligence
 handoffs:
   upstream:   [atlas, spectra, apivr]
   downstream: [spectra, apivr, scribe]
 ---
 
-# AGENTS.md — Reasoner / FORGE methodology (v1.7.0)
+# AGENTS.md — Reasoner / FORGE methodology
 
 > This file follows the [agents.md open standard](https://agents.md). It is
 > auto-loaded by **GitHub Copilot**, **Cursor**, **OpenCode**, and any other
@@ -112,4 +112,4 @@ this codebase. Arbitrate: saga vs event sourcing for the order workflow.
 
 ---
 
-*Reasoner v1.7.0 — FORGE methodology*
+*Reasoner — FORGE methodology*

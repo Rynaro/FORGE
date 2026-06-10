@@ -1,6 +1,6 @@
 ---
 name: reasoner
-version: 1.7.0
+version: 1.9.0
 description: "Structured deliberation specialist. Produces evidence-grounded verdicts for hard problems that resist straightforward answers."
 ---
 
@@ -251,4 +251,4 @@ estimate, not a benchmarked accuracy figure.
 
 ---
 
-*Reasoner v1.7.0*
+*Reasoner*

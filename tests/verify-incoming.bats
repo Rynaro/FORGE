@@ -48,10 +48,15 @@ load helpers.bash
   grep -q 'verify_fail' "${REPO_ROOT}/skills/verify-incoming.md"
 }
 
-@test "skill opens with a heading (no YAML frontmatter)" {
-  local first_non_blank
-  first_non_blank="$(grep -v '^[[:space:]]*$' "${REPO_ROOT}/skills/verify-incoming.md" | head -1)"
-  [[ "$first_non_blank" == "# "* ]]
+@test "skill has canonical YAML frontmatter with non-empty name and description" {
+  # D2 migration: all skills now carry canonical frontmatter.
+  # Assert the file starts with '---', and that name and description are present
+  # with non-empty values.
+  local first_line
+  first_line="$(head -1 "${REPO_ROOT}/skills/verify-incoming.md")"
+  [[ "$first_line" == "---" ]]
+  grep -q '^name: forge-verify-incoming' "${REPO_ROOT}/skills/verify-incoming.md"
+  grep -qE '^description: .+' "${REPO_ROOT}/skills/verify-incoming.md"
 }
 
 # ── install.sh registration ──────────────────────────────────────────────────

@@ -294,4 +294,4 @@ machine-checkable P0 invariants across the Eidolon suite.
 
 ---
 
-*Reasoner v1.7.0 — Design Rationale*
+*Reasoner — Design Rationale*

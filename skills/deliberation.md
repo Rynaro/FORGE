@@ -1,6 +1,18 @@
+---
+name: forge-deliberation
+description: Governs hypothesis generation, adversarial stress-testing, and multi-criteria scoring during the FORGE Reason phase. Use when the Reasoner enters Phase R to generate ≥3 distinct hypotheses, run Inversion/Boundary/Pre-Mortem/Dependency stress tests, score on a 5-dimension weighted rubric, and execute multi-pass deliberation. Do not use when Self-Consistency Mode (G2/TRANCE) is active — load forge-self-consistency instead.
+metadata:
+  methodology: FORGE
+  phase: R
+---
+
 # Deliberation Methodology
 
 Loaded during the Reason phase. Governs how the Reasoner generates, tests, and scores competing hypotheses.
+
+## When to use
+
+Load this skill at the start of Phase R (Reason) for standard single-trace deliberation. Use it to generate ≥3 genuinely distinct hypotheses, stress-test each with the four adversarial checks (Inversion, Boundary, Pre-Mortem, Dependency), score on the 5-dimension rubric (Evidence Alignment 30%, Constraint Satisfaction 25%, Risk Profile 20%, Reversibility 15%, Second-Order Clarity 10%), and execute 1–3 passes as set by the depth score from Phase F. Do not use when Self-Consistency Mode (G2/TRANCE) fires — load `forge-self-consistency` instead.
 
 ---
 
@@ -228,4 +240,4 @@ normally without execution-layer recording.
 
 ---
 
-*Reasoner v1.7.0 — Deliberation Skill*
+*Reasoner — Deliberation Skill*
