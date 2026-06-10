@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.1] — 2026-06-10
+
+### Changed
+- `.claude/agents/forge.md` (and its `install.sh` heredoc): `tools: none` → `tools: Read, Grep, Glob, Write`.
+  Rationale: "reasoning-only" P0 prohibits codebase mutation and exploration-by-execution, not artifact
+  consumption. FORGE's Observe phase and verify-incoming gate read handed-off evidence files and
+  `.envelope.json` sidecars; the Emit phase writes its own decision artifact. These are documented
+  F-O-R-G-E cycle operations. Nexus MCP wiring appends `mcp__crystalium__*` globs separately; no Bash
+  (execution) and no Edit (code mutation) are included. Tool refusals at TRANCE remain immutable.
+
 ## [1.9.0] — 2026-06-10
 
 ### Changed

@@ -11,7 +11,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
 EIDOLON_SLUG="forge"
-EIDOLON_VERSION="1.9.0"
+EIDOLON_VERSION="1.9.1"
 METHODOLOGY="FORGE"
 
 # Legacy artefacts swept by cleanup_legacy_v1_2 (belt-and-braces early sweep,
@@ -528,7 +528,7 @@ wire_host() {
         local CLAUDE_AGENT="---
 name: ${EIDOLON_NAME}
 description: Reasoner — structured deliberation for hard decisions via the FORGE cycle (Frame → Observe → Reason → Gate → Emit). Reasoning-only; refuses tools, exploration, and implementation.
-tools: none
+tools: Read, Grep, Glob, Write
 methodology: ${METHODOLOGY}
 methodology_version: \"${EIDOLON_VERSION}\"
 role: Reasoner — structured deliberation and decision intelligence

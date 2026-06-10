@@ -1,9 +1,9 @@
 ---
 name: forge
 description: Reasoner — structured deliberation for hard decisions via the FORGE cycle (Frame → Observe → Reason → Gate → Emit). Reasoning-only; refuses tools, exploration, and implementation.
-tools: none
+tools: Read, Grep, Glob, Write
 methodology: FORGE
-methodology_version: "1.9.0"
+methodology_version: "1.9.1"
 role: Reasoner — structured deliberation and decision intelligence
 handoffs: [spectra, apivr, atlas, scribe]
 ---
