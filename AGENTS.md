@@ -1,8 +1,8 @@
 ---
 name: forge
-version: 1.9.0
+version: 1.9.1
 methodology: FORGE
-methodology_version: 1.9.0
+methodology_version: 1.9.1
 role: Reasoner — structured deliberation and decision intelligence
 handoffs:
   upstream:   [atlas, spectra, apivr]
