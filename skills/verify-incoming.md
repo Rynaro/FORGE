@@ -1,6 +1,18 @@
+---
+name: forge-verify-incoming
+description: Blocking receiver integrity gate for inbound ECL hand-offs to FORGE (ECL §6.2.2). Use automatically when reading any upstream artefact that carries a sibling `.envelope.json` — verifies `verify_pass` trace event keyed by `message_id` before processing the payload. Refuses and returns control to the orchestrator on integrity mismatch, missing event, schema violation, or undeclared edge. Do not use for artefacts without a sibling envelope.
+metadata:
+  methodology: FORGE
+  phase: F
+---
+
 # Verify-Incoming Skill — FORGE (blocking, symmetric)
 
 Loaded when reading any upstream artefact handed off to FORGE that carries a sibling `.envelope.json`. Blocking receiver integrity gate (ECL §6.2.2).
+
+## When to use
+
+Load this skill automatically when the Reasoner reads any upstream artefact at path `P` AND a sibling `${P%.*}.envelope.json` exists. The skill enforces the blocking integrity gate: a `verify_pass` trace event keyed by `message_id` MUST be on record before processing begins. On any integrity or contract failure, the skill REFUSES and returns control to the orchestrator. If no `.envelope.json` sibling exists, skip silently.
 
 Receiver-side integrity gate for inbound ECL hand-offs. When an upstream
 artefact arrives with a sibling `.envelope.json`, FORGE MUST NOT process the
@@ -142,12 +154,12 @@ envelope is unparseable, use `unknown`.
 
 **verify_pass:**
 ```json
-{"ts":"<RFC3339>","event":"verify_pass","message_id":"<uuid>","thread_id":"<uuid>","from":"<eidolon>@<version>","to":"forge@1.2","performative":"<performative>","integrity_method":"sha256"}
+{"ts":"<RFC3339>","event":"verify_pass","message_id":"<uuid>","thread_id":"<uuid>","from":"<eidolon>@<version>","to":"forge@<version>","performative":"<performative>","integrity_method":"sha256"}
 ```
 
 **verify_fail:**
 ```json
-{"ts":"<RFC3339>","event":"verify_fail","message_id":"<uuid>","thread_id":"<uuid>","from":"<eidolon>@<version>","to":"forge@1.2","integrity_method":"sha256","verify_failure_code":"<CODE>","decision":"refused"}
+{"ts":"<RFC3339>","event":"verify_fail","message_id":"<uuid>","thread_id":"<uuid>","from":"<eidolon>@<version>","to":"forge@<version>","integrity_method":"sha256","verify_failure_code":"<CODE>","decision":"refused"}
 ```
 
 ---
@@ -166,4 +178,4 @@ envelope is unparseable, use `unknown`.
 
 ---
 
-*Verify-Incoming Skill — blocking, symmetric, mechanical-gate-backed (ECL §6.2.2)*
+*Reasoner — Verify-Incoming Skill (blocking, symmetric, ECL §6.2.2)*

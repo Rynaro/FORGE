@@ -1,6 +1,16 @@
 # Changelog
 
-## [Unreleased]
+## [1.9.0] — 2026-06-10
+
+### Changed
+- Version-stamp hygiene: all doc/template/host-file footers stripped of version numbers (D1); version lives only in `install.sh` `EIDOLON_VERSION`, `agent.md`/`AGENTS.md` frontmatter `version:`, `SPEC.md` header, README, and CHANGELOG entries.
+- Canonical skill frontmatter added to all five skills (`forge-framing`, `forge-deliberation`, `forge-verification`, `forge-self-consistency`, `forge-verify-incoming`) with rich `description`, `metadata.methodology`, and `metadata.phase` fields; `## When to use` sections preserved.
+- `tests/verify-incoming.bats`: no-frontmatter assertion inverted — test now asserts frontmatter presence with non-empty `name` and `description`.
+- `examples/install.manifest.json`: version bumped to 1.9.0; `self-consistency` and `verify-incoming` skill entries added (EIIS I5).
+- `schemas/reasoning-report.envelope.json`: `from.version` bumped `1.3.0` → `1.9.0`.
+- `.claude/agents/forge.md`: `methodology_version` updated to `1.9.0`.
+
+## [1.8.0] — 2026-06-04
 
 ### Added
 - **Blocking symmetric verify-incoming gate (ECL §6.2.2)** — replaces the
@@ -248,12 +258,10 @@
 - Tracks `Rynaro/eidolons` roster: `forge` versions.latest 1.2.1 →
   1.3.0 in a separate `fix/roster-forge-1-3-0` PR.
 
-## [1.2.1] - 2026-04-26 — Re-vendor EIIS v1.1 schema (codex enum)
+## [1.2.1] - 2026-04-26 — Re-vendor EIIS v1.1 schema (codex enum) + release workflow
 
 ### Fixed
 - `schemas/install.manifest.v1.json` re-vendored from EIIS v1.1 — the previously bundled copy lacked `codex` in the `hosts_wired` enum, causing the EIIS conformance checker's M14 (JSON Schema validation) to fail when a validator (`ajv` / `python -m jsonschema`) was on PATH. Pure schema fix; no install.sh behaviour change.
-
-## [Unreleased]
 
 ### Added
 - **Release-integrity workflow** — `.github/workflows/release.yml` adopts the eidolons-nexus reusable release template (`Rynaro/eidolons/.github/workflows/eidolon-release-template.yml@main`). On `workflow_dispatch` with a SemVer version input, the workflow runs EIIS conformance against the tagged tree, builds a release manifest (commit, tree, `archive_sha256`, and `manifest_sha256` when `install.manifest.json` exists at repo root — currently `null` for FORGE), creates and pushes the annotated tag, attests artifacts via GitHub's provenance API, and publishes the GitHub Release with `source.tar`, `release-manifest.json`, and `SHA256SUMS`. Pairs with the nexus's `Roster Intake` workflow which ingests the release and opens a PR populating `versions.releases.<X.Y.Z>` in `roster/index.yaml`. Pre-cursor to `eidolons verify` flipping from `integrity.enforcement: warn` to `strict` once all six shipped Eidolons have published release metadata.

@@ -29,4 +29,4 @@ Use the Reasoner when someone needs a *decision*, not a plan, not code, not a do
 
 ---
 
-*Reasoner v1.7.0*
+*Reasoner*

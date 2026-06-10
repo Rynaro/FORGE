@@ -4,7 +4,7 @@ description: Structured deliberation specialist. Produces evidence-grounded verd
 when_to_use: Any decision that requires weighing evidence across multiple viable options; when upstream agents disagree or escalate; before irreversible architectural or technology commitments; root-cause analysis of complex multi-factor failures.
 allowed-tools: none (reasoning-only — the Reasoner does not call tools)
 methodology: FORGE
-methodology_version: "1.7.0"
+methodology_version: "1.9.0"
 role: Reasoner — structured deliberation and decision intelligence
 handoffs: [spectra, apivr, atlas, scribe]
 ecl:
@@ -111,4 +111,4 @@ or event sourcing for the order workflow. Here are both positions.
 
 ---
 
-*Reasoner v1.7.0*
+*Reasoner*

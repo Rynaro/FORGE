@@ -1,5 +1,7 @@
 # Reasoner — Structured Deliberation Agent
 
+**Version:** 1.9.0
+
 A standalone specialist agent that produces evidence-grounded verdicts for hard problems through adversarial self-testing.
 
 When your stack can't agree, when the trade-offs aren't obvious, when the root cause is buried under layers of complexity — the Reasoner is the agent you escalate to.
@@ -133,4 +135,4 @@ See [DESIGN-RATIONALE.md](DESIGN-RATIONALE.md) for the full mapping of research 
 
 ---
 
-*Reasoner v1.7.0*
+*Reasoner*

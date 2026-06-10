@@ -1,6 +1,18 @@
+---
+name: forge-verification
+description: Governs logic verification, evidence coverage, confidence calibration, and the REFORGE protocol during the FORGE Gate phase. Use when the Reasoner enters Phase G to check logical soundness (fallacy scan), verify evidence coverage, assess decision completeness, calibrate the 4-factor confidence score, and decide pass/emit or trigger a single REFORGE revision pass.
+metadata:
+  methodology: FORGE
+  phase: G
+---
+
 # Verification Methodology
 
 Loaded during the Gate phase. Governs how the Reasoner validates its own reasoning before emitting a verdict.
+
+## When to use
+
+Load this skill at the start of Phase G (Gate). Use it to walk the inference chain backward from the verdict for structural defects, build a claim-level evidence coverage matrix, check the decision completeness checklist, derive the 4-factor confidence score (Evidence Quality, Logical Coherence, Constraint Coverage, Sensitivity Analysis), and execute exactly one REFORGE revision pass if the gate fails. Also use it for the Emit phase to build the ECL envelope and persist the verdict via CRYSTALIUM ingest + session_end. Do not use for hypothesis generation (Phase R) or problem decomposition (Phase F).
 
 ---
 
@@ -230,4 +242,4 @@ hard-fail on absent CRYSTALIUM tools. FORGE is EIIS-standalone-conformant.
 
 ---
 
-*Reasoner v1.7.0 — Verification Skill*
+*Reasoner — Verification Skill*

@@ -1,9 +1,21 @@
+---
+name: forge-self-consistency
+description: Governs N perspective-diverse, mutually-blind reasoning traces with structural-agreement judge-merge for gated high-stakes FORGE decisions (G2/TRANCE). Use instead of forge-deliberation when Deep depth AND a stakes flag both hold (Framing score 8–9 with irreversible/system-wide blast radius), or on explicit opt-in. Do NOT use for standard-tier decisions — self-consistency is never the default.
+metadata:
+  methodology: FORGE
+  phase: R-variant
+---
+
 # Self-Consistency Mode
 
 Loaded **instead of** `skills/deliberation.md` when a G2 / TRANCE self-consistency
 escalation fires. Governs how the Reasoner runs **N perspective-diverse,
 mutually-blind reasoning traces** over a frozen Frame+Observe inventory and
 merges them on **structural agreement**, not on verbalized confidence.
+
+## When to use
+
+Load this skill **instead of** `forge-deliberation` when BOTH a complexity flag AND a stakes flag hold: Deep depth (Framing Step-4 total 8–9) with an irreversible or system-wide blast radius. Also loads on explicit opt-in ("run self-consistency", "G2", "N=5 on this"). Use N=3 for standard high-stakes runs and N=5 for the worst-case quadrant (irreversible AND system-wide). Do not enter this mode for standard-depth decisions; do not combine with `forge-deliberation` in the same Reason phase.
 
 This mode is **gated, never default** (see "Gate" below). Standard-tier FORGE
 stays single-trace (`skills/deliberation.md`, 1–3 passes). Self-consistency is
@@ -187,4 +199,4 @@ FORGE is tool-less (P0) and cannot dispatch a second model itself, so this is a
 
 ---
 
-*Reasoner v1.7.0 — Self-Consistency Skill*
+*Reasoner — Self-Consistency Skill*
