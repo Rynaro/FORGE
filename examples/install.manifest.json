@@ -69,6 +69,18 @@
       "mode": "created"
     },
     {
+      "path": ".eidolons/forge/skills/checker-handoff.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "role": "skill",
+      "mode": "created"
+    },
+    {
+      "path": ".claude/skills/forge-checker-handoff/SKILL.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "role": "skill",
+      "mode": "created"
+    },
+    {
       "path": ".eidolons/forge/templates/verdict.md",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "role": "template",
@@ -220,7 +232,11 @@
   },
   "ecl": {
     "envelope_version": "2.0",
-    "outbound_artifacts": ["reasoning-report"],
-    "inbound_artifacts":  ["reasoning-request"]
+    "outbound_artifacts": [
+      "reasoning-report"
+    ],
+    "inbound_artifacts": [
+      "reasoning-request"
+    ]
   }
 }
