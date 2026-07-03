@@ -11,7 +11,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EIDOLON_NAME="forge"
 EIDOLON_SLUG="forge"
-EIDOLON_VERSION="1.9.1"
+EIDOLON_VERSION="1.10.0"
 METHODOLOGY="FORGE"
 
 # Legacy artefacts swept by cleanup_legacy_v1_2 (belt-and-braces early sweep,
@@ -304,10 +304,10 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
   if [[ "$DRY_RUN" == "true" ]]; then
     echo "[dry-run] Would create: ${TARGET}/"
     echo "[dry-run] Would copy: SPEC.md, agent.md, ECL_VERSION"
-    echo "[dry-run] Would copy: skills/framing.md, skills/deliberation.md, skills/verification.md, skills/self-consistency.md, skills/verify-incoming.md"
+    echo "[dry-run] Would copy: skills/framing.md, skills/deliberation.md, skills/verification.md, skills/self-consistency.md, skills/verify-incoming.md, skills/checker-handoff.md"
     echo "[dry-run] Would wire skills to .claude/skills/forge-<phase>/SKILL.md"
     echo "[dry-run] Would copy: templates/verdict.md, trade-off-analysis.md, feasibility-assessment.md, root-cause-analysis.md, conflict-resolution.md"
-    echo "[dry-run] Would copy: schemas/reasoning-report-profile.v1.json, schemas/ecl-envelope.v1.json, schemas/reasoning-report.envelope.json"
+    echo "[dry-run] Would copy: schemas/reasoning-report-profile.v1.json, schemas/ecl-envelope.v1.json, schemas/ecl-envelope.v2.json, schemas/reasoning-report.envelope.json"
     echo ""
   else
     # Create target directory
@@ -371,6 +371,7 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     wire_skill "verification"
     wire_skill "self-consistency"
     wire_skill "verify-incoming"
+    wire_skill "checker-handoff"
 
     # Copy templates (all must be *.md per EIIS v1.4 §1.7 whitelist).
     # Note: reasoning-report.envelope.json was in templates/ before v1.5.0;
@@ -381,11 +382,14 @@ if [[ "$MANIFEST_ONLY" != "true" ]]; then
     copy_tracked "templates/root-cause-analysis.md"     "$TARGET/templates/root-cause-analysis.md"    "template"
     copy_tracked "templates/conflict-resolution.md"     "$TARGET/templates/conflict-resolution.md"    "template"
 
-    # Copy ECL schemas (v1.3.0+). reasoning-report.envelope.json moved here
-    # from templates/ in v1.5.0 — EIIS v1.4 §1.7 whitelist allows schemas/*.json.
+    # Copy ECL schemas (v1.3.0+, targeting v2.0). reasoning-report.envelope.json
+    # moved here from templates/ in v1.5.0 — EIIS v1.4 §1.7 whitelist allows
+    # schemas/*.json. ecl-envelope.v1.json is RETAINED alongside v2.0 for the
+    # ECL §7.3 back-compat validation window (through 2027-05-13).
     copy_tracked "schemas/install.manifest.v1.json"          "$TARGET/schemas/install.manifest.v1.json"          "other"
     copy_tracked "schemas/reasoning-report-profile.v1.json"  "$TARGET/schemas/reasoning-report-profile.v1.json"  "other"
     copy_tracked "schemas/ecl-envelope.v1.json"              "$TARGET/schemas/ecl-envelope.v1.json"              "other"
+    copy_tracked "schemas/ecl-envelope.v2.json"              "$TARGET/schemas/ecl-envelope.v2.json"              "other"
     copy_tracked "schemas/reasoning-report.envelope.json"    "$TARGET/schemas/reasoning-report.envelope.json"    "other"
 
     # EIIS v1.4 §6.X: manifest-driven canonical-inventory sweep.
@@ -720,7 +724,7 @@ sha256_val() {
 
 build_skills_json() {
   local skills_json="" sep=""
-  for skill in framing deliberation verification self-consistency verify-incoming; do
+  for skill in framing deliberation verification self-consistency verify-incoming checker-handoff; do
     local src_path="${TARGET_CLEAN}/skills/${skill}.md"
     local vendor_path=".claude/skills/${EIDOLON_SLUG}-${skill}/SKILL.md"
     local src_sha
