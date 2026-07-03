@@ -1,6 +1,6 @@
 # Reasoner — Structured Deliberation Agent
 
-**Version:** 1.9.1
+**Version:** 1.10.0
 
 A standalone specialist agent that produces evidence-grounded verdicts for hard problems through adversarial self-testing.
 

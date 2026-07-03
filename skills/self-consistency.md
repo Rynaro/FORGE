@@ -27,7 +27,8 @@ sampled traces with majority-vote / judge-merge (G2)"* — operationalized here.
 ## Gate — when this mode fires (and when it must not)
 
 Self-consistency fires ONLY when **both** a complexity flag and a stakes flag
-hold, OR on explicit opt-in:
+hold, OR on explicit opt-in, OR when the roster declares a weak-host degraded
+mode (see item 3 below):
 
 1. **Deep depth** — Framing Step-4 total 8–9 (high Ambiguity AND Irreversibility
    OR system-wide Blast radius). A Deep score on its own is necessary but the
@@ -35,8 +36,15 @@ hold, OR on explicit opt-in:
    trance-matrix C6 auto-trigger requirement: a complexity flag AND a stakes flag.
 2. **Explicit opt-in** — the user or the parent orchestrator names the mode
    ("run self-consistency", "G2", "N=5 on this").
+3. **Weak or undeclared host** — the roster declares FORGE
+   `degraded_mode: sample-select` (`roster/routing.yaml`, routing-1.1): on a
+   weak or undeclared host this mode REPLACES single-trace self-red-teaming
+   (the Pass-3 Deep red-team in `skills/deliberation.md`) rather than only
+   gating on Deep + stakes — the roster data itself is the trigger, because
+   sampling+selection is more reliable than unbounded single-trace
+   self-correction on a weak host.
 
-If neither holds, **do not enter this mode** — run standard single-trace FORGE.
+If none of the above hold, **do not enter this mode** — run standard single-trace FORGE.
 Forcing G2 universally violates the opt-in contract (FORGE is never a mandatory
 critique gate). This mode adds *parallelism*, not a fresh budget: it composes
 with — does not extend — the existing 3-pass / 1-REFORGE cap.

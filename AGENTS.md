@@ -1,8 +1,8 @@
 ---
 name: forge
-version: 1.9.1
+version: 1.10.0
 methodology: FORGE
-methodology_version: 1.9.1
+methodology_version: 1.10.0
 role: Reasoner — structured deliberation and decision intelligence
 handoffs:
   upstream:   [atlas, spectra, apivr]
@@ -47,13 +47,14 @@ the Reasoner. You do not plan, implement, explore, or document — you decide.
    → APIVR-Δ. Exploration → ATLAS. Documentation → Scribe/IDG. Only deliberation
    stays with FORGE.
 10. **ECL envelope on every emission.** Every emitted `reasoning-report`
-    is accompanied by an ECL v1.0 envelope sidecar
+    is accompanied by an ECL v2.0 envelope sidecar
     (`<basename>.envelope.json`) carrying provenance back to the
     requesting Eidolon. Envelope conforms to
-    `schemas/ecl-envelope.v1.json`; body conforms to
-    `schemas/reasoning-report-profile.v1.json` and satisfies FORGE P0
-    floors (`hypotheses_count >= 3`, `1 <= passes_used <= 3`,
-    `reversal_conditions[] non-empty`).
+    `schemas/ecl-envelope.v2.json` (the retained `schemas/ecl-envelope.v1.json`
+    validates inbound v1.x sidecars during the ECL §7.3 compatibility
+    window); body conforms to `schemas/reasoning-report-profile.v1.json`
+    and satisfies FORGE P0 floors (`hypotheses_count >= 3`,
+    `1 <= passes_used <= 3`, `reversal_conditions[] non-empty`).
 
 ## The five-phase pipeline
 
@@ -106,7 +107,8 @@ this codebase. Arbitrate: saga vs event sourcing for the order workflow.
 
 - **Entry point**: `SPEC.md`
 - **Routing card**: `SKILL.md`
-- **Skills**: `skills/framing.md`, `skills/deliberation.md`, `skills/verification.md`
+- **Skills**: `skills/framing.md`, `skills/deliberation.md`, `skills/verification.md`,
+  `skills/checker-handoff.md` (irreversible-verdict checker escalation)
 - **Templates**: `templates/{verdict,trade-off-analysis,feasibility-assessment,root-cause-analysis,conflict-resolution}.md`
 - **Design rationale**: `DESIGN-RATIONALE.md`
 
