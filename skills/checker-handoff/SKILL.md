@@ -10,7 +10,7 @@ metadata:
 
 Loaded at the tail of the Emit phase, after the verdict and its recommended
 action are drafted but before the envelope is finalized. FORGE's own Gate
-(`skills/verification.md`) is a **self-review** pass — sound for most
+(`skills/verification/SKILL.md`) is a **self-review** pass — sound for most
 verdicts, but not sufficient authority to greenlight an action that cannot be
 undone. This skill is the mechanical trigger that routes those verdicts to a
 **distinct checker** before any action is taken.
@@ -41,7 +41,7 @@ Five categories, checked mechanically against the recommended action's text
 These five categories are the closed trigger set for this skill — do not
 extend them ad hoc. If a recommended action is genuinely irreversible but
 does not fit any of the five, the standard Reversibility dimension in
-`skills/framing.md` Step 4 and the verdict's `[RISK]` markers already carry
+`skills/framing/SKILL.md` Step 4 and the verdict's `[RISK]` markers already carry
 that signal; this skill only formalizes the mechanically-observable subset.
 
 ## Your hop

@@ -39,7 +39,7 @@ prior FORGE verdicts directly reusable.
 installed), proceed without memory — never hard-fail. FORGE is EIIS-standalone-
 conformant and works without CRYSTALIUM.
 
-See `agent.md` §"Memory pre-flight" for the always-loaded note. See `SPEC.md §9`
+See `PERSONA.md` §"Memory pre-flight" for the always-loaded note. See `SPEC.md §9`
 for the full memory protocol summary.
 
 ---
