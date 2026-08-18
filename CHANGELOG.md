@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0] — 2026-08-18 — Self-contained EIIS v3 package
+
+### Changed
+
+- Adopt the canonical EIIS v3 `PERSONA.md`, `SPEC.md`, and `skills/<methodology>/SKILL.md` package layout.
+- Declare package resources through `manifest.json` and remove duplicated vendor-specific host wiring.
+- Pin package conformance and release validation to EIIS v3.0.0.
+
 ## [1.10.0] — 2026-07-03 — ECL v2.0 adoption (ISE trust-hierarchy, checker handoff, drift kill)
 
 ### Added
