@@ -136,3 +136,17 @@ See [DESIGN-RATIONALE.md](DESIGN-RATIONALE.md) for the full mapping of research 
 ---
 
 *Reasoner*
+
+<!-- eiis-v3-package:start -->
+## EIIS v3 package
+
+This repository has the same self-contained package shape as every roster Eidolon:
+
+- `PERSONA.md` — bounded identity, triggers, authority, refusals, and handoffs.
+- `SPEC.md` — the authoritative methodology.
+- `skills/<methodology>/SKILL.md` — unique skill discovery entrypoints.
+- `manifest.json` — immutable package metadata and resource inventory.
+- `install.sh` — package-only installer; the nexus owns vendor adapters.
+
+See [INSTALL.md](INSTALL.md) for nexus and standalone installation.
+<!-- eiis-v3-package:end -->

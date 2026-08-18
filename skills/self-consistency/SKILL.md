@@ -8,7 +8,7 @@ metadata:
 
 # Self-Consistency Mode
 
-Loaded **instead of** `skills/deliberation.md` when a G2 / TRANCE self-consistency
+Loaded **instead of** `skills/deliberation/SKILL.md` when a G2 / TRANCE self-consistency
 escalation fires. Governs how the Reasoner runs **N perspective-diverse,
 mutually-blind reasoning traces** over a frozen Frame+Observe inventory and
 merges them on **structural agreement**, not on verbalized confidence.
@@ -18,7 +18,7 @@ merges them on **structural agreement**, not on verbalized confidence.
 Load this skill **instead of** `forge-deliberation` when BOTH a complexity flag AND a stakes flag hold: Deep depth (Framing Step-4 total 8–9) with an irreversible or system-wide blast radius. Also loads on explicit opt-in ("run self-consistency", "G2", "N=5 on this"). Use N=3 for standard high-stakes runs and N=5 for the worst-case quadrant (irreversible AND system-wide). Do not enter this mode for standard-depth decisions; do not combine with `forge-deliberation` in the same Reason phase.
 
 This mode is **gated, never default** (see "Gate" below). Standard-tier FORGE
-stays single-trace (`skills/deliberation.md`, 1–3 passes). Self-consistency is
+stays single-trace (`skills/deliberation/SKILL.md`, 1–3 passes). Self-consistency is
 the TRANCE form the trance-matrix grants FORGE: *"N=3 (or N=5 high-stakes)
 sampled traces with majority-vote / judge-merge (G2)"* — operationalized here.
 
@@ -39,7 +39,7 @@ mode (see item 3 below):
 3. **Weak or undeclared host** — the roster declares FORGE
    `degraded_mode: sample-select` (`roster/routing.yaml`, routing-1.1): on a
    weak or undeclared host this mode REPLACES single-trace self-red-teaming
-   (the Pass-3 Deep red-team in `skills/deliberation.md`) rather than only
+   (the Pass-3 Deep red-team in `skills/deliberation/SKILL.md`) rather than only
    gating on Deep + stakes — the roster data itself is the trigger, because
    sampling+selection is more reliable than unbounded single-trace
    self-correction on a weak host.

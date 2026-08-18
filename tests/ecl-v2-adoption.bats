@@ -70,42 +70,12 @@ load helpers.bash
 # install.sh wiring — v2 schema + checker-handoff skill
 # ─────────────────────────────────────────────────────────────────────────────
 
-@test "v2: install.sh copies schemas/ecl-envelope.v2.json" {
-  grep -q 'schemas/ecl-envelope.v2.json' "${REPO_ROOT}/install.sh"
-}
 
-@test "v2: install.sh wire_skill calls include checker-handoff" {
-  grep -q 'wire_skill "checker-handoff"' "${REPO_ROOT}/install.sh"
-}
 
-@test "v2: install.sh build_skills_json loop includes checker-handoff" {
-  grep -qE 'for skill in.*checker-handoff' "${REPO_ROOT}/install.sh"
-}
 
-@test "v2: install produces both ecl-envelope.v1.json and v2.json in target" {
-  run_install --non-interactive --force
-  [ "$status" -eq 0 ]
-  [ -f "${INSTALL_TARGET}/schemas/ecl-envelope.v1.json" ]
-  [ -f "${INSTALL_TARGET}/schemas/ecl-envelope.v2.json" ]
-}
 
-@test "v2: install produces skills/checker-handoff.md in the target" {
-  run_install --non-interactive --force
-  [ "$status" -eq 0 ]
-  [ -f "${INSTALL_TARGET}/skills/checker-handoff.md" ]
-}
 
-@test "v2: install wires .claude/skills/forge-checker-handoff/SKILL.md for claude-code host" {
-  run_install --non-interactive --force
-  [ "$status" -eq 0 ]
-  [ -f "${TEST_PROJECT}/.claude/skills/forge-checker-handoff/SKILL.md" ]
-}
 
-@test "v2: install manifest records checker-handoff skill" {
-  run_install --non-interactive --force
-  [ "$status" -eq 0 ]
-  grep -q 'checker-handoff' "${INSTALL_TARGET}/install.manifest.json"
-}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # ISE block — outbound reasoning-report envelope template
@@ -150,9 +120,9 @@ load helpers.bash
   [[ "$output" =~ ^forge-[0-9]+\.[0-9]+\.[0-9]+$ ]]
 }
 
-@test "ise: justification for self-attested grade is documented in skills/verification.md" {
-  grep -qi 'self-attested' "${REPO_ROOT}/skills/verification.md"
-  grep -qi 'self-review' "${REPO_ROOT}/skills/verification.md"
+@test "ise: justification for self-attested grade is documented in skills/verification/SKILL.md" {
+  grep -qi 'self-attested' "${REPO_ROOT}/skills/verification/SKILL.md"
+  grep -qi 'self-review' "${REPO_ROOT}/skills/verification/SKILL.md"
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -176,36 +146,36 @@ load helpers.bash
   done
 }
 
-@test "checker-handoff: skills/checker-handoff.md exists with canonical frontmatter" {
-  [ -f "${REPO_ROOT}/skills/checker-handoff.md" ]
+@test "checker-handoff: skills/checker-handoff/SKILL.md exists with canonical frontmatter" {
+  [ -f "${REPO_ROOT}/skills/checker-handoff/SKILL.md" ]
   local first_line
-  first_line="$(head -1 "${REPO_ROOT}/skills/checker-handoff.md")"
+  first_line="$(head -1 "${REPO_ROOT}/skills/checker-handoff/SKILL.md")"
   [[ "$first_line" == "---" ]]
-  grep -q '^name: forge-checker-handoff' "${REPO_ROOT}/skills/checker-handoff.md"
-  grep -qE '^description: .+' "${REPO_ROOT}/skills/checker-handoff.md"
+  grep -q '^name: forge-checker-handoff' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
+  grep -qE '^description: .+' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
 }
 
 @test "checker-handoff: skill enumerates the five irreversibility trigger categories" {
-  grep -qi 'deploy' "${REPO_ROOT}/skills/checker-handoff.md"
-  grep -qi 'destructive migration' "${REPO_ROOT}/skills/checker-handoff.md"
-  grep -qi 'security-boundary' "${REPO_ROOT}/skills/checker-handoff.md"
-  grep -qi 'external spend' "${REPO_ROOT}/skills/checker-handoff.md"
-  grep -qi 'public communication' "${REPO_ROOT}/skills/checker-handoff.md"
+  grep -qi 'deploy' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
+  grep -qi 'destructive migration' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
+  grep -qi 'security-boundary' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
+  grep -qi 'external spend' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
+  grep -qi 'public communication' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
 }
 
 @test "checker-handoff: skill declares maker != checker and stays tool-less" {
-  grep -qi 'maker' "${REPO_ROOT}/skills/checker-handoff.md"
-  grep -qi 'checker' "${REPO_ROOT}/skills/checker-handoff.md"
-  grep -qi 'tool-less' "${REPO_ROOT}/skills/checker-handoff.md"
+  grep -qi 'maker' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
+  grep -qi 'checker' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
+  grep -qi 'tool-less' "${REPO_ROOT}/skills/checker-handoff/SKILL.md"
 }
 
-@test "checker-handoff: agent.md P0 rules reference the hop without renumbering 1-8" {
-  grep -q '^8\. \*\*Scope discipline\.\*\*' "${REPO_ROOT}/agent.md"
-  grep -q '^9\. \*\*Checker handoff' "${REPO_ROOT}/agent.md"
-  grep -q 'requires_checker' "${REPO_ROOT}/agent.md"
+@test "checker-handoff: PERSONA.md P0 rules reference the hop without renumbering 1-8" {
+  grep -q '^8\. \*\*Scope discipline\.\*\*' "${REPO_ROOT}/PERSONA.md"
+  grep -q '^9\. \*\*Checker handoff' "${REPO_ROOT}/PERSONA.md"
+  grep -q 'requires_checker' "${REPO_ROOT}/PERSONA.md"
 }
 
-@test "checker-handoff: agent.md token budget gate still passes with the new P0 line" {
+@test "checker-handoff: PERSONA.md token budget gate still passes with the new P0 line" {
   run_install --non-interactive --force
   [ "$status" -eq 0 ]
 }
@@ -214,31 +184,26 @@ load helpers.bash
 # Weak-host self-consistency trigger (additive, roster degraded_mode data)
 # ─────────────────────────────────────────────────────────────────────────────
 
-@test "degraded-mode: skills/self-consistency.md references roster degraded_mode: sample-select" {
-  grep -q 'degraded_mode: sample-select' "${REPO_ROOT}/skills/self-consistency.md"
+@test "degraded-mode: skills/self-consistency/SKILL.md references roster degraded_mode: sample-select" {
+  grep -q 'degraded_mode: sample-select' "${REPO_ROOT}/skills/self-consistency/SKILL.md"
 }
 
-@test "degraded-mode: skills/self-consistency.md references routing.yaml and self-red-teaming replacement" {
-  grep -q 'routing.yaml' "${REPO_ROOT}/skills/self-consistency.md"
-  grep -qi 'self-red-team' "${REPO_ROOT}/skills/self-consistency.md"
+@test "degraded-mode: skills/self-consistency/SKILL.md references routing.yaml and self-red-teaming replacement" {
+  grep -q 'routing.yaml' "${REPO_ROOT}/skills/self-consistency/SKILL.md"
+  grep -qi 'self-red-team' "${REPO_ROOT}/skills/self-consistency/SKILL.md"
 }
 
 @test "degraded-mode: self-consistency.md existing Deep+stakes and opt-in gates are unchanged (additive-only amendment)" {
-  grep -q 'Deep depth' "${REPO_ROOT}/skills/self-consistency.md"
-  grep -q 'Explicit opt-in' "${REPO_ROOT}/skills/self-consistency.md"
-  grep -q 'N=3' "${REPO_ROOT}/skills/self-consistency.md"
-  grep -q 'N=5' "${REPO_ROOT}/skills/self-consistency.md"
+  grep -q 'Deep depth' "${REPO_ROOT}/skills/self-consistency/SKILL.md"
+  grep -q 'Explicit opt-in' "${REPO_ROOT}/skills/self-consistency/SKILL.md"
+  grep -q 'N=3' "${REPO_ROOT}/skills/self-consistency/SKILL.md"
+  grep -q 'N=5' "${REPO_ROOT}/skills/self-consistency/SKILL.md"
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Drift-kill: no stray "ECL v1.0" prose left in documentation
 # ─────────────────────────────────────────────────────────────────────────────
 
-@test "drift: AGENTS.md targets ECL v2.0, not v1.0" {
-  grep -q 'ECL v2.0' "${REPO_ROOT}/AGENTS.md"
-  run grep -c 'ECL v1\.0' "${REPO_ROOT}/AGENTS.md"
-  [[ "$output" == "0" ]]
-}
 
 @test "drift: SPEC.md targets ECL v2.0, not v1.0" {
   grep -q 'ECL v2.0' "${REPO_ROOT}/SPEC.md"
@@ -246,45 +211,20 @@ load helpers.bash
   [[ "$output" == "0" ]]
 }
 
-@test "drift: skills/verification.md envelope checklist header is ECL v2.0" {
-  grep -q 'Envelope Construction Checklist (ECL v2.0' "${REPO_ROOT}/skills/verification.md"
-  run grep -c 'ECL v1\.0' "${REPO_ROOT}/skills/verification.md"
+@test "drift: skills/verification/SKILL.md envelope checklist header is ECL v2.0" {
+  grep -q 'Envelope Construction Checklist (ECL v2.0' "${REPO_ROOT}/skills/verification/SKILL.md"
+  run grep -c 'ECL v1\.0' "${REPO_ROOT}/skills/verification/SKILL.md"
   [[ "$output" == "0" ]]
 }
 
-@test "drift: skills/verification.md envelope template path points at schemas/, not the stale templates/ path" {
-  grep -q 'schemas/reasoning-report.envelope.json' "${REPO_ROOT}/skills/verification.md"
-  run grep -c 'templates/reasoning-report.envelope.json' "${REPO_ROOT}/skills/verification.md"
+@test "drift: skills/verification/SKILL.md envelope template path points at schemas/, not the stale templates/ path" {
+  grep -q 'schemas/reasoning-report.envelope.json' "${REPO_ROOT}/skills/verification/SKILL.md"
+  run grep -c 'templates/reasoning-report.envelope.json' "${REPO_ROOT}/skills/verification/SKILL.md"
   [[ "$output" == "0" ]]
 }
 
-@test "drift: ECL_VERSION file is 2.0 (source install.sh reads from)" {
-  [[ "$(cat "${REPO_ROOT}/ECL_VERSION")" == "2.0" ]]
-}
 
-@test "drift: install manifest ecl.envelope_version reflects the ECL_VERSION file at install time" {
-  if ! command -v jq &>/dev/null; then
-    skip "jq not available"
-  fi
-  run_install --non-interactive --force
-  [ "$status" -eq 0 ]
-  run jq -r '.ecl.envelope_version' "${INSTALL_TARGET}/install.manifest.json"
-  [[ "$output" == "2.0" ]]
-}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Version stamp — 5 canonical homes at 1.10.0
 # ─────────────────────────────────────────────────────────────────────────────
-
-@test "stamp: install.sh, agent.md, AGENTS.md, SPEC.md, README.md agree on 1.10.0" {
-  grep -q 'EIDOLON_VERSION="1.10.0"' "${REPO_ROOT}/install.sh"
-  grep -q 'methodology_version: "1.10.0"' "${REPO_ROOT}/agent.md"
-  grep -q 'version: 1.10.0' "${REPO_ROOT}/AGENTS.md"
-  grep -q 'methodology_version: 1.10.0' "${REPO_ROOT}/AGENTS.md"
-  grep -q 'version: 1.10.0' "${REPO_ROOT}/SPEC.md"
-  grep -q '\*\*Version:\*\* 1.10.0' "${REPO_ROOT}/README.md"
-}
-
-@test "stamp: CHANGELOG.md has a 1.10.0 entry" {
-  grep -q '## \[1.10.0\]' "${REPO_ROOT}/CHANGELOG.md"
-}

@@ -1,147 +1,34 @@
-# Installing the Reasoner (FORGE)
+# Installing FORGE
 
-The Reasoner is installed by copying its files into your project and wiring
-your AI tooling to point at the entry file. The `install.sh` script handles
-detection and wiring automatically.
-
-## Quick install
+## Through the Eidolons nexus
 
 ```bash
-# From the Reasoner repo root, run inside your target project:
-bash /path/to/forge/install.sh
-
-# Or specify a custom target directory:
-bash /path/to/forge/install.sh --target ./.eidolons/forge
-
-# Dry-run to preview changes without writing:
-bash /path/to/forge/install.sh --dry-run
+eidolons add forge
+eidolons sync
+eidolons harness check
 ```
 
-Default install target: `./.eidolons/forge`
+The nexus installs the canonical package below `.eidolons/forge/`
+and owns all Claude Code, Codex, Copilot, Cursor, and OpenCode discovery
+adapters. This repository does not ship vendor-specific copies.
 
-## Host wiring
-
-### Claude Code
-
-After install, add the Reasoner to your project's `CLAUDE.md`:
-
-```
-@.eidolons/forge/SPEC.md
-```
-
-Or register as a sub-agent (Claude Code ≥ 1.x):
-
-```bash
-mkdir -p .claude/agents
-ln -sf ../../.eidolons/forge/agent.md .claude/agents/reasoner.md
-```
-
-Then invoke:
-
-```
-@SPEC.md
-
-FORGE, help me decide: [your question]
-```
-
-### GitHub Copilot
-
-1. Copy the Reasoner into your project: `bash install.sh --hosts copilot`
-2. The installer creates or updates `.github/copilot-instructions.md` with
-   a pointer to `.eidolons/forge/SPEC.md`.
-3. Alternatively, place `.eidolons/forge/agent.md` in `.github/agents/` for
-   Copilot's native agent discovery:
-
-```bash
-mkdir -p .github/agents
-cp .eidolons/forge/agent.md .github/agents/reasoner.agent.md
-```
-
-### Cursor
-
-1. Run `bash install.sh --hosts cursor` — creates `.cursor/rules/reasoner.mdc`
-2. Or create manually:
-
-```markdown
----
-description: Reasoner — structured deliberation for hard decisions (FORGE)
-globs: "**/*"
-alwaysApply: false
----
-
-See .eidolons/forge/agent.md for the full specification.
-```
-
-### OpenCode
-
-1. Run `bash install.sh --hosts opencode` — creates `.opencode/agents/forge.md`
-2. Or create manually:
-
-```markdown
----
-mode: primary
-description: Reasoner — structured deliberation for hard decisions (FORGE)
----
-
-See .eidolons/forge/SPEC.md for full rules.
-```
-
-### Raw API / any LLM
-
-Load `SPEC.md` as the system prompt. No other files required for
-basic deliberation. Load skills and templates on demand per phase.
-
-## Verify the install
-
-After installing, paste this smoke-test prompt into your AI tool:
-
-```
-Reasoner, evaluate this trade-off: given a team of 3 engineers, a
-6-week deadline, and an existing Rails monolith at 80K LOC, should
-we extract the billing service into a separate microservice now, or
-defer to next quarter? Constraints: PCI compliance audit in 8 weeks,
-no additional infrastructure budget this quarter.
-```
-
-**Expected behavior:** The Reasoner frames the question, inventories
-the constraints, generates ≥3 hypotheses, scores them across 5
-dimensions, and emits a verdict with a confidence score and reversal
-conditions. If it asks clarifying questions instead of deliberating
-immediately, that is also correct (the Frame phase may request
-missing success criteria).
-
-## Upgrade
-
-To upgrade to a newer version:
-
-```bash
-bash /path/to/new-forge/install.sh --target ./.eidolons/forge --force
-```
-
-The `--force` flag skips the version-compare prompt. The installer
-updates all files and writes a new `install.manifest.json`.
-
-## Uninstall
-
-Remove the installed directory and any dispatch file entries:
-
-```bash
-rm -rf ./.eidolons/forge
-# Then remove the @.eidolons/forge/SPEC.md line from CLAUDE.md,
-# .cursor/rules/forge.mdc, etc.
-```
-
-## Non-interactive / meta-installer mode
-
-For use inside a meta-installer script (e.g., `eidolons-init`):
+## Standalone package install
 
 ```bash
 bash install.sh \
   --target ./.eidolons/forge \
-  --hosts all \
+  --hosts raw \
   --non-interactive \
   --force
 ```
 
-Exits with code 3 if an existing install is found without `--force`.
-Exits with code 4 if `agent.md` exceeds 1000 tokens.
+The installed tree contains `PERSONA.md`, `SPEC.md`, `manifest.json`, every
+declared skill and resource, plus the generated `install.receipt.json`.
+Repeated installation of the same package is byte-identical.
+
+## Verify the source package
+
+```bash
+git clone https://github.com/Rynaro/eidolons-eiis /tmp/eidolons-eiis
+bash /tmp/eidolons-eiis/conformance/check.sh .
+```

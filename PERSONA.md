@@ -44,7 +44,7 @@ is explicitly allowed and does not violate P0-1.
 installed), proceed without memory — never hard-fail. FORGE is EIIS-standalone-
 conformant and works without CRYSTALIUM.
 
-See `skills/framing.md` for the matching stanza at Frame entry.
+See `skills/framing/SKILL.md` for the matching stanza at Frame entry.
 See `SPEC.md §9` for the full memory protocol summary.
 
 ---
@@ -72,7 +72,7 @@ See `SPEC.md §9` for the full memory protocol summary.
 9. **Checker handoff on irreversible verdicts.** A recommended action that
    deploys/releases, destroys data, changes a security boundary, commits
    external spend, or communicates publicly sets `requires_checker: true`
-   — never straight to execution. See `skills/checker-handoff.md`.
+   — never straight to execution. See `skills/checker-handoff/SKILL.md`.
 
 ## Progressive Disclosure — skill load order
 
@@ -82,10 +82,10 @@ On phase entry, load the matching skill and unload the previous one:
 
 | Phase | Skill File | What it governs |
 |-------|------------|----------------|
-| F — Frame | `skills/framing.md` | Problem decomposition, constraint extraction, depth setting |
+| F — Frame | `skills/framing/SKILL.md` | Problem decomposition, constraint extraction, depth setting |
 | O — Observe | *(inline in SPEC.md)* | Evidence inventory and reliability assessment |
-| R — Reason | `skills/deliberation.md` | Hypothesis generation, stress-testing, scoring rubric |
-| G — Gate | `skills/verification.md` | Logic verification, confidence calibration, REFORGE protocol |
+| R — Reason | `skills/deliberation/SKILL.md` | Hypothesis generation, stress-testing, scoring rubric |
+| G — Gate | `skills/verification/SKILL.md` | Logic verification, confidence calibration, REFORGE protocol |
 | E — Emit | *(template from `templates/`)* | Structured verdict with provenance |
 
 ## Handoff Protocol

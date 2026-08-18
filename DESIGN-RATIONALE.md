@@ -109,7 +109,7 @@ frozen Frame+Observe inventory, each driven by a distinct adversarial persona
 (evidence-max / pre-mortem / constraint-relax / inversion / simplest-viable),
 merged by a **structural-agreement judge-merge** at the 60% consensus floor
 (`trance-matrix.md:51`), with an **opt-in independent-verifier handoff** as the
-ceiling-breaker. Full protocol: `skills/self-consistency.md`; spec gate:
+ceiling-breaker. Full protocol: `skills/self-consistency/SKILL.md`; spec gate:
 `SPEC.md §10`.
 
 **Rationale (research → design):**
@@ -132,7 +132,7 @@ ceiling-breaker. Full protocol: `skills/self-consistency.md`; spec gate:
 - **Gated, never default** — preserves the opt-in deliberation contract: forcing
   G2 universally would make FORGE a mandatory critique node, which corrupts its
   reasoning-only, escalate-on-demand role. The gate (Deep + stakes, OR explicit
-  opt-in) is stated in both `SPEC.md §10` and the skill trigger; `agent.md` is
+  opt-in) is stated in both `SPEC.md §10` and the skill trigger; `PERSONA.md` is
   untouched, so standard tier stays single-trace.
 
 **Reconciliation with the "unbounded debate excluded" decision (below):** the
@@ -217,14 +217,14 @@ Both sets are defensible; the chosen set is more differentiated phase-to-phase a
 | Component | Estimated Tokens | When Loaded |
 |-----------|-----------------|-------------|
 | SPEC.md (entry point) | ~1,150 | Always when Reasoner active |
-| skills/framing.md | ~920 | Frame phase |
-| skills/deliberation.md | ~1,100 | Reason phase (standard tier) |
-| skills/verification.md | ~950 | Gate phase |
-| skills/self-consistency.md | ~1,300 | Reason phase — **in place of** deliberation.md during a G2 / TRANCE run (gated) |
+| skills/framing/SKILL.md | ~920 | Frame phase |
+| skills/deliberation/SKILL.md | ~1,100 | Reason phase (standard tier) |
+| skills/verification/SKILL.md | ~950 | Gate phase |
+| skills/self-consistency/SKILL.md | ~1,300 | Reason phase — **in place of** deliberation.md during a G2 / TRANCE run (gated) |
 | Template (largest: verdict) | ~480 | Per decision type |
 
 **Typical working set**: SPEC.md + one skill + one template ≈ **2,550 tokens**.
-A G2 run swaps `skills/deliberation.md` for `skills/self-consistency.md` (it does
+A G2 run swaps `skills/deliberation/SKILL.md` for `skills/self-consistency/SKILL.md` (it does
 not load both), so the single-context working set stays ≤ **3,500 tokens**.
 (Parent-dispatched G2 subagents each carry their own working set; the fan-out
 cost is orchestration-level, not a single-context budget concern.)
@@ -232,7 +232,7 @@ cost is orchestration-level, not a single-context budget concern.)
 This is consistent with the stack's design envelope:
 - Scribe: ~2,200 tokens working set
 - APIVR-Δ: ~4,350 tokens working set
-- ATLAS: ~2,100 tokens working set (agent.md + one skill)
+- ATLAS: ~2,100 tokens working set (PERSONA.md + one skill)
 
 The remaining context budget is available for the evidence the Reasoner needs to deliberate on — which is the right priority, since deliberation quality scales with evidence quality, not with instruction volume.
 

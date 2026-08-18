@@ -169,8 +169,8 @@ checklist before emitting:
 6. **Select performative**: `PROPOSE` (default), `CRITIQUE` (REFORGE-reframe path where the question itself is being challenged), `INFORM` (no-action finding — all options equivalent within constraints).
 7. **Append `emit` trace event** to `.eidolons/.trace/<thread_id>.jsonl` per ECL §5.
 8. Validate the sidecar against `schemas/ecl-envelope.v2.json` before writing.
-9. **Set the `ise` block** — `assertion_grade: "self-attested"` (ECL v2.0 §6.5; FORGE's Gate is a self-review pass, not an externally spec-mandated check, so `self-attested` is the honest grade — only a distinct checker per `skills/checker-handoff.md` earns `validated`), `provenance.methodology_version` (`forge-<version>`), and `receiver_authorization` (`auto_route: true`, `auto_merge: false`, `auto_deploy: false`).
-10. **Check the checker-handoff gate** — load `skills/checker-handoff.md` and compare the recommended action against its irreversibility trigger table. A match sets the body's `requires_checker` flag to `true`; no match leaves it at the default `false`.
+9. **Set the `ise` block** — `assertion_grade: "self-attested"` (ECL v2.0 §6.5; FORGE's Gate is a self-review pass, not an externally spec-mandated check, so `self-attested` is the honest grade — only a distinct checker per `skills/checker-handoff/SKILL.md` earns `validated`), `provenance.methodology_version` (`forge-<version>`), and `receiver_authorization` (`auto_route: true`, `auto_merge: false`, `auto_deploy: false`).
+10. **Check the checker-handoff gate** — load `skills/checker-handoff/SKILL.md` and compare the recommended action against its irreversibility trigger table. A match sets the body's `requires_checker` flag to `true`; no match leaves it at the default `false`.
 
 The envelope template is at `schemas/reasoning-report.envelope.json`.
 
